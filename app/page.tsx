@@ -1,62 +1,81 @@
-import { TimeGreeting } from "@/components/features/time-greeting";
-import { LiveStatus } from "@/components/features/live-status";
-import { ArrowRight } from "lucide-react";
+"use client";
+
+import { InteractiveHero } from "@/components/interactive-hero";
+import { FeaturedProjects } from "@/components/featured-projects";
+import { BlogSection } from "@/components/blog-section";
+import { motion } from "framer-motion";
+import { Github, Linkedin, Mail, Twitter } from "lucide-react";
 import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col justify-center px-6 md:px-20 max-w-7xl mx-auto pt-20">
-      <div className="space-y-12">
-        {/* Hero Section */}
-        <div className="space-y-8">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between max-w-2xl">
-              <TimeGreeting />
-            </div>
-            
-            <h1 className="text-6xl md:text-9xl font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/50 pb-4">
-              Naksh<br className="md:hidden" /> Prajapati
-            </h1>
+    <main className="relative min-h-screen bg-background">
+      {/* Hero Section */}
+      <InteractiveHero />
 
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-mono text-muted-foreground uppercase tracking-wider">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-              Open to work
-            </div>
-          </div>
-          
-          <div className="max-w-2xl space-y-8">
-            <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed font-light">
-              I build digital organisms. My work lives at the edge of 
-              <span className="text-foreground font-medium"> calm intensity</span> and 
-              <span className="text-foreground font-medium"> radical curiosity</span>—treating every commit as a hypothesis and every deployment as an evolution.
+      {/* Featured Projects */}
+      <FeaturedProjects />
+
+      {/* Blog/Thoughts Section */}
+      <BlogSection />
+
+      {/* Contact Section */}
+      <section className="py-20 px-6 md:px-20">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              Let's <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Connect</span>
+            </h2>
+            <p className="text-muted-foreground text-lg mb-8 max-w-2xl mx-auto">
+              I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.
             </p>
 
-            <div className="flex flex-wrap gap-4">
-              <Link 
-                href="/work"
-                className="group flex items-center gap-2 px-6 py-3 bg-white text-black rounded-full font-medium hover:bg-white/90 transition-colors"
-              >
-                View Work
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link 
-                href="/signal"
-                className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 rounded-full font-medium hover:bg-white/10 transition-colors"
-              >
-                Contact Me
-              </Link>
+            {/* Social Links */}
+            <div className="flex justify-center gap-4 mb-8">
+              {[
+                { icon: Github, href: "https://github.com/thenakshprajapat", label: "GitHub" },
+                { icon: Linkedin, href: "https://linkedin.com/in/naksh-prajapati", label: "LinkedIn" },
+                { icon: Twitter, href: "https://twitter.com/nakshprajapati", label: "Twitter" },
+                { icon: Mail, href: "mailto:hello@naksh.dev", label: "Email" },
+              ].map((social) => (
+                <Link
+                  key={social.label}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group p-4 rounded-full bg-secondary hover:bg-primary transition-all duration-300"
+                  aria-label={social.label}
+                >
+                  <social.icon className="w-6 h-6 group-hover:text-primary-foreground transition-colors" />
+                </Link>
+              ))}
             </div>
-          </div>
-        </div>
 
-        {/* Live Status Grid */}
-        <div className="pt-12 border-t border-white/5">
-          <h2 className="text-sm font-mono text-muted-foreground mb-6 uppercase tracking-wider">
-            Live Telemetry
-          </h2>
-          <LiveStatus />
+            <Link
+              href="mailto:hello@naksh.dev"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-primary text-primary-foreground font-medium shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+            >
+              <Mail className="w-5 h-5" />
+              Get in Touch
+            </Link>
+          </motion.div>
         </div>
-      </div>
-    </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-border py-8 px-6">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
+          <p>© 2026 Naksh Prajapati. Crafted with care.</p>
+          <p className="flex items-center gap-2">
+            Built with Next.js & Framer Motion
+          </p>
+        </div>
+      </footer>
+    </main>
   );
 }

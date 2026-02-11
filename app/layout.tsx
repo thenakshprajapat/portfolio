@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Outfit, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { DockNav } from "@/components/layout/dock-nav";
-import { GridBackground } from "@/components/layout/grid-bg";
+import { Preloader } from "@/components/ui/preloader";
+import { SmoothScroll } from "@/components/layout/smooth-scroll";
+import { PageTransition } from "@/components/layout/page-transition";
+import { FloatingNav } from "@/components/floating-nav";
+import { CursorFollower } from "@/components/ui/cursor-follower";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const outfit = Outfit({
+  variable: "--font-sans",
   subsets: ["latin"],
 });
 
@@ -15,8 +18,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Naksh Prajapati | The Kinetic Lab",
-  description: "Exploring the frontier of AI and Code. A digital portfolio.",
+  title: "Naksh Prajapati | Developer & Designer",
+  description: "Building beautiful, functional digital experiences at the intersection of code and creativity.",
 };
 
 export default function RootLayout({
@@ -25,16 +28,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="light">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-background text-foreground selection:bg-white/20`}
+        className={`${outfit.variable} ${geistMono.variable} antialiased min-h-screen bg-background text-foreground`}
       >
-        <div className="noise-bg" />
-        <GridBackground />
-        <main className="pb-24 relative z-10">
-          {children}
-        </main>
-        <DockNav />
+        <div className="grain-texture" />
+        <CursorFollower />
+        <FloatingNav />
+        <Preloader />
+        <SmoothScroll>
+          <main className="relative z-10 w-full">
+            <PageTransition>
+              {children}
+            </PageTransition>
+          </main>
+        </SmoothScroll>
       </body>
     </html>
   );
