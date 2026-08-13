@@ -1,160 +1,178 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Radio, Mail, Twitter, Github, Linkedin, MapPin, Clock } from "lucide-react";
+import {
+  Radio,
+  Mail,
+  Twitter,
+  Github,
+  Linkedin,
+  MapPin,
+  Clock,
+  ArrowLeft,
+  Copy,
+  Check,
+  ExternalLink,
+  Cpu,
+  Activity,
+} from "lucide-react";
 import Link from "next/link";
-
-const CONTACT_LINKS = [
-  {
-    href: "mailto:hello@nakshdev.tech",
-    icon: Mail,
-    label: "Email",
-    value: "hello@nakshdev.tech",
-    gradient: "from-blue-500 to-cyan-500",
-  },
-  {
-    href: "https://twitter.com/idevnaksh",
-    icon: Twitter,
-    label: "Twitter",
-    value: "@iDevNaksh",
-    gradient: "from-cyan-500 to-blue-500",
-  },
-  {
-    href: "https://github.com/thenakshprajapat",
-    icon: Github,
-    label: "GitHub",
-    value: "github.com/thenakshprajapat",
-    gradient: "from-purple-500 to-pink-500",
-  },
-  {
-    href: "https://linkedin.com/in/thenakshprajapat",
-    icon: Linkedin,
-    label: "LinkedIn",
-    value: "Naksh Prajapati",
-    gradient: "from-blue-600 to-blue-800",
-  },
-];
+import { SpotlightCard } from "@/components/ui/spotlight-card";
+import { FloatingNav } from "@/components/floating-nav";
+import { CommandMenu } from "@/components/command-menu";
+import { Footer } from "@/components/footer";
+import { sound } from "@/lib/sound";
 
 export default function SignalPage() {
+  const [commandOpen, setCommandOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [timeString, setTimeString] = useState("");
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      setTimeString(
+        new Intl.DateTimeFormat("en-GB", {
+          timeZone: "Asia/Kolkata",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+        }).format(now)
+      );
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const copyEmail = () => {
+    navigator.clipboard.writeText("hello@nakshdev.tech");
+    setCopied(true);
+    sound.playSuccess();
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
-    <div className="min-h-screen flex flex-col justify-center px-6 md:px-20 max-w-4xl mx-auto pt-20">
-      <div className="space-y-12">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="space-y-6"
-        >
+    <main className="relative min-h-screen bg-[#0a0a0a] text-zinc-100 selection:bg-blue-600/30 selection:text-white">
+      <div className="noise-overlay" />
+      <FloatingNav onOpenCommand={() => setCommandOpen(true)} />
+      <CommandMenu isOpen={commandOpen} setIsOpen={setCommandOpen} />
+
+      <div className="pt-32 pb-24 px-6 sm:px-12 max-w-4xl mx-auto">
+        <div className="mb-8">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-xs font-mono text-zinc-400 hover:text-white transition-colors"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Back to Home</span>
+          </Link>
+        </div>
+
+        {/* Signal Radar Header */}
+        <div className="space-y-6 mb-12">
           <div className="flex items-center gap-3">
-            <div className="relative">
-              <Radio className="w-10 h-10 text-green-600" />
-              <motion.div
-                animate={{ scale: [1, 1.2, 1], opacity: [0.8, 0, 0.8] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="absolute inset-0 -z-10"
-              >
-                <Radio className="w-10 h-10 text-green-600" />
-              </motion.div>
+            <div className="relative flex h-4 w-4">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500" />
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
-              <span className="bg-gradient-to-r from-primary to-green-600 bg-clip-text text-transparent">
-                Signal
-              </span>
+            <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-white">
+              Signal &amp; Status
             </h1>
           </div>
 
-          <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed">
-            Signal strength:{" "}
-            <span className="text-green-600 font-semibold">Strong</span>.
-            I am currently{" "}
-            <span className="text-foreground font-semibold">online</span> and
-            scanning for complex problems. If you are building something that
-            scares you, open a channel.
+          <p className="text-lg sm:text-xl text-zinc-300 leading-relaxed font-normal">
+            Channel Status: <span className="text-emerald-400 font-semibold">Live &amp; Active</span>.
+            Currently exploring low-level Android OS systems, Binder IPC, and open to high-impact internships or collaborative research.
           </p>
 
-          {/* Status Info */}
-          <div className="flex flex-wrap gap-4 text-sm">
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-secondary">
-              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-muted-foreground">Available for work</span>
+          <div className="flex flex-wrap gap-3 text-xs font-mono">
+            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-zinc-300">
+              <span className="w-2 h-2 rounded-full bg-emerald-500" />
+              <span>Available for 2026/2027 Roles</span>
             </div>
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-secondary">
-              <MapPin className="w-4 h-4 text-muted-foreground" />
-              <span className="text-muted-foreground">Remote / India</span>
+            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-zinc-300">
+              <MapPin className="w-3.5 h-3.5 text-blue-400" />
+              <span>Bengaluru, India (Open to Remote / Relocation)</span>
             </div>
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-secondary">
-              <Clock className="w-4 h-4 text-muted-foreground" />
-              <span className="text-muted-foreground">GMT+5:30</span>
+            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-zinc-300">
+              <Clock className="w-3.5 h-3.5 text-blue-400" />
+              <span className="tabular-nums">{timeString || "02:56:00"} (IST GMT+5:30)</span>
             </div>
           </div>
-        </motion.div>
+        </div>
 
-        {/* Contact Links */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-          className="grid gap-4"
-        >
-          {CONTACT_LINKS.map((contact, index) => (
-            <motion.div
-              key={contact.label}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 + index * 0.1, duration: 0.5 }}
-            >
-              <Link
-                href={contact.href}
+        {/* Channels Grid */}
+        <div className="grid gap-4">
+          <SpotlightCard className="p-6" enableSound>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400">
+                  <Mail className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-white">Direct Transmission</h3>
+                  <p className="text-xs font-mono text-zinc-400">hello@nakshdev.tech</p>
+                </div>
+              </div>
+              <button
+                onClick={copyEmail}
+                className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-mono text-zinc-200 transition-colors"
+              >
+                {copied ? "Copied!" : "Copy Email"}
+              </button>
+            </div>
+          </SpotlightCard>
+
+          <SpotlightCard className="p-6" enableSound>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400">
+                  <Twitter className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-white">X / Twitter</h3>
+                  <p className="text-xs font-mono text-zinc-400">@iDevNaksh</p>
+                </div>
+              </div>
+              <a
+                href="https://twitter.com/idevnaksh"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group block p-6 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all duration-300 hover:shadow-xl relative overflow-hidden"
+                className="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-zinc-300 transition-colors"
               >
-                {/* Gradient overlay */}
-                <div className={`absolute inset-0 bg-gradient-to-r ${contact.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
+                <ExternalLink className="w-4 h-4" />
+              </a>
+            </div>
+          </SpotlightCard>
 
-                <div className="relative z-10 flex items-center gap-4">
-                  <div className={`p-3 rounded-xl bg-gradient-to-br ${contact.gradient} text-white`}>
-                    <contact.icon className="w-6 h-6" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-sm text-muted-foreground mb-1">
-                      {contact.label}
-                    </div>
-                    <div className="font-medium group-hover:text-primary transition-colors">
-                      {contact.value}
-                    </div>
-                  </div>
-                  <div className="text-muted-foreground group-hover:translate-x-1 transition-transform">
-                    →
-                  </div>
+          <SpotlightCard className="p-6" enableSound>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400">
+                  <Github className="w-5 h-5" />
                 </div>
-              </Link>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Call to Action */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.6 }}
-          className="p-8 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20 text-center"
-        >
-          <h3 className="text-2xl font-bold mb-2">Let's Build Something</h3>
-          <p className="text-muted-foreground mb-6">
-            Have a project in mind? I'm always interested in hearing about new
-            opportunities and collaborations.
-          </p>
-          <Link
-            href="mailto:hello@nakshdev.tech"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-primary text-primary-foreground font-medium shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
-          >
-            <Mail className="w-5 h-5" />
-            Send Me a Message
-          </Link>
-        </motion.div>
+                <div>
+                  <h3 className="text-sm font-semibold text-white">GitHub</h3>
+                  <p className="text-xs font-mono text-zinc-400">github.com/thenakshprajapat</p>
+                </div>
+              </div>
+              <a
+                href="https://github.com/thenakshprajapat"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-zinc-300 transition-colors"
+              >
+                <ExternalLink className="w-4 h-4" />
+              </a>
+            </div>
+          </SpotlightCard>
+        </div>
       </div>
-    </div>
+
+      <Footer />
+    </main>
   );
 }

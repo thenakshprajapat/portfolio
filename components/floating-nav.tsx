@@ -1,142 +1,183 @@
 "use client";
 
-import { motion, useMotionValueEvent, useScroll } from "framer-motion";
-import { Home, Briefcase, Brain, Zap, Menu, X } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import {
+  Sparkles,
+  FolderGit2,
+  BookOpen,
+  Milestone,
+  Wrench,
+  Send,
+  Command,
+  Volume2,
+  VolumeX,
+  Menu,
+  X,
+  Activity,
+} from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { sound } from "@/lib/sound";
 
 const NAV_ITEMS = [
-  { name: "Home", href: "/", icon: Home },
-  { name: "Work", href: "/work", icon: Briefcase },
-  { name: "Mind", href: "/mind", icon: Brain },
-  { name: "Lab", href: "/lab", icon: Zap },
+  { id: "hero", label: "Overview" },
+  { id: "proof", label: "Proof" },
+  { id: "projects", label: "Projects" },
+  { id: "journey", label: "Journey" },
+  { id: "writing", label: "Writing" },
+  { id: "toolbox", label: "Toolbox" },
+  { id: "contact", label: "Contact" },
 ];
 
-export function FloatingNav() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { scrollY } = useScroll();
-  const pathname = usePathname();
+export function FloatingNav({ onOpenCommand }: { onOpenCommand: () => void }) {
+  const [activeSection, setActiveSection] = useState<string>("hero");
+  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
 
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    setIsScrolled(latest > 100);
-  });
+  useEffect(() => {
+    setIsMuted(sound.getMuted());
+
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 200;
+      for (const item of NAV_ITEMS) {
+        const element = document.getElementById(item.id);
+        if (element) {
+          const top = element.offsetTop;
+          const height = element.offsetHeight;
+          if (scrollPosition >= top && scrollPosition < top + height) {
+            setActiveSection(item.id);
+          }
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollTo = (id: string) => {
+    sound.playClick();
+    setMobileMenuOpen(false);
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const toggleSound = () => {
+    const muted = sound.toggleMute();
+    setIsMuted(muted);
+  };
 
   return (
-    <>
-      {/* Desktop Navigation */}
-      <motion.nav
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className={`hidden md:block fixed top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ${
-          isScrolled ? "top-4" : "top-6"
-        }`}
-      >
-        <motion.div
-          animate={{
-            scale: isScrolled ? 0.95 : 1,
-          }}
-          className="glass-effect rounded-full px-6 py-3 shadow-lg"
-        >
-          <ul className="flex items-center gap-2">
-            {NAV_ITEMS.map((item) => {
-              const isActive = pathname === item.href;
-              const Icon = item.icon;
-
-              return (
-                <li key={item.name}>
-                  <Link
-                    href={item.href}
-                    className={`group relative flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                      isActive
-                        ? "text-primary-foreground"
-                        : "text-foreground hover:text-primary"
-                    }`}
-                  >
-                    {isActive && (
-                      <motion.div
-                        layoutId="nav-active"
-                        className="absolute inset-0 bg-primary rounded-full"
-                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                      />
-                    )}
-                    <Icon className="w-4 h-4 relative z-10" />
-                    <span className="relative z-10">{item.name}</span>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </motion.div>
-      </motion.nav>
-
-      {/* Mobile Navigation */}
-      <motion.div
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="md:hidden fixed top-4 right-4 z-50"
-      >
+    <header className="fixed top-5 inset-x-0 z-40 flex justify-center px-4 pointer-events-none">
+      <div className="pointer-events-auto flex items-center justify-between gap-2 sm:gap-4 px-3 sm:px-4 py-2 rounded-full border border-white/[0.08] bg-[#121214]/80 backdrop-blur-xl shadow-2xl shadow-black/80 max-w-4xl w-full">
+        {/* Brand / Logo */}
         <button
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="glass-effect p-3 rounded-full shadow-lg"
-          aria-label="Toggle menu"
+          onClick={() => scrollTo("hero")}
+          className="flex items-center gap-2 px-2 py-1 text-sm font-semibold text-white tracking-tight hover:text-blue-400 transition-colors"
         >
-          {isMobileMenuOpen ? (
-            <X className="w-6 h-6" />
-          ) : (
-            <Menu className="w-6 h-6" />
-          )}
+          <span className="w-2 h-2 rounded-full bg-blue-500 shadow-sm shadow-blue-500/80" />
+          <span className="font-mono text-xs sm:text-sm">naksh.dev</span>
         </button>
-      </motion.div>
 
-      {/* Mobile Menu Overlay */}
-      {isMobileMenuOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="md:hidden fixed inset-0 bg-background/95 backdrop-blur-lg z-40"
-          onClick={() => setIsMobileMenuOpen(false)}
-        >
-          <motion.div
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ type: "spring", damping: 20 }}
-            className="absolute right-0 top-0 h-full w-3/4 max-w-sm bg-card border-l border-border p-8"
-            onClick={(e) => e.stopPropagation()}
+        {/* Desktop Nav Links */}
+        <nav className="hidden md:flex items-center gap-1">
+          {NAV_ITEMS.map((item) => {
+            const isActive = activeSection === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => scrollTo(item.id)}
+                className={`relative px-3 py-1.5 rounded-full text-xs font-mono transition-colors ${
+                  isActive ? "text-white font-medium" : "text-zinc-400 hover:text-zinc-200"
+                }`}
+              >
+                {isActive && (
+                  <motion.div
+                    layoutId="active-nav-pill"
+                    className="absolute inset-0 rounded-full bg-white/[0.08] border border-white/[0.12] -z-10"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+                {item.label}
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* Controls: Sound & Command Palette */}
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <button
+            onClick={toggleSound}
+            aria-label={isMuted ? "Unmute sound effects" : "Mute sound effects"}
+            className="p-2 rounded-full bg-white/[0.03] border border-white/[0.06] text-zinc-400 hover:text-white hover:bg-white/[0.08] transition-colors"
           >
-            <nav className="mt-16">
-              <ul className="space-y-4">
-                {NAV_ITEMS.map((item) => {
-                  const isActive = pathname === item.href;
-                  const Icon = item.icon;
+            {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5 text-blue-400" />}
+          </button>
 
-                  return (
-                    <li key={item.name}>
-                      <Link
-                        href={item.href}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className={`flex items-center gap-4 px-4 py-3 rounded-xl text-lg font-medium transition-all duration-300 ${
-                          isActive
-                            ? "bg-primary text-primary-foreground"
-                            : "hover:bg-secondary"
-                        }`}
-                      >
-                        <Icon className="w-6 h-6" />
-                        {item.name}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </nav>
-          </motion.div>
+          <button
+            onClick={() => {
+              sound.playPop();
+              onOpenCommand();
+            }}
+            className="hidden sm:flex items-center gap-2 px-2.5 py-1.5 rounded-full bg-white/[0.05] hover:bg-white/[0.1] border border-white/[0.08] text-xs font-mono text-zinc-300 transition-colors"
+          >
+            <Command className="w-3 h-3 text-zinc-400" />
+            <span>Search</span>
+            <kbd className="px-1.5 py-0.2 rounded bg-black/40 text-[10px] text-zinc-400 border border-white/5">
+              ⌘K
+            </kbd>
+          </button>
+
+          {/* Mobile Menu Trigger */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 rounded-full bg-white/[0.03] border border-white/[0.06] text-zinc-300"
+            aria-label="Toggle navigation menu"
+          >
+            {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Drawer */}
+      {mobileMenuOpen && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          className="pointer-events-auto md:hidden fixed top-20 inset-x-4 p-4 rounded-2xl border border-white/10 bg-[#121214]/95 backdrop-blur-2xl shadow-2xl space-y-1"
+        >
+          {NAV_ITEMS.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => scrollTo(item.id)}
+              className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-left text-sm font-mono transition-colors ${
+                activeSection === item.id
+                  ? "bg-blue-600/15 text-blue-400 font-medium border border-blue-500/20"
+                  : "text-zinc-300 hover:bg-white/5"
+              }`}
+            >
+              <span>{item.label}</span>
+              {activeSection === item.id && <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />}
+            </button>
+          ))}
+
+          <div className="pt-2 mt-2 border-t border-white/[0.08] flex items-center justify-between px-2">
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                onOpenCommand();
+              }}
+              className="flex items-center gap-2 text-xs font-mono text-zinc-400"
+            >
+              <Command className="w-3.5 h-3.5" />
+              <span>Command Palette (⌘K)</span>
+            </button>
+          </div>
         </motion.div>
       )}
-    </>
+    </header>
   );
 }
