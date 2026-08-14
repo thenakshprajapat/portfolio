@@ -5,12 +5,12 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { FloatingNav } from "@/components/floating-nav";
 import { CommandMenu } from "@/components/command-menu";
-import { FeaturedProjects } from "@/components/featured-projects";
+import { ContactTerminal } from "@/components/contact-terminal";
 import { Footer } from "@/components/footer";
 import { CursorFollower } from "@/components/ui/cursor-follower";
 import { LiquidBackground } from "@/components/ui/liquid-background";
 
-export default function WorkPage() {
+export default function ContactPage() {
   const [commandOpen, setCommandOpen] = useState(false);
 
   return (
@@ -31,7 +31,7 @@ export default function WorkPage() {
         </Link>
       </div>
 
-      <FeaturedProjects />
+      <ContactTerminal />
 
       <Footer />
     </main>

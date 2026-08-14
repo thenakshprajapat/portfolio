@@ -4,19 +4,22 @@ import React, { useState } from "react";
 import { FloatingNav } from "@/components/floating-nav";
 import { HeroSection } from "@/components/hero-section";
 import { ProofBento } from "@/components/proof-bento";
-import { FeaturedProjects } from "@/components/featured-projects";
-import { JourneyTimeline } from "@/components/journey-timeline";
-import { WritingSection } from "@/components/writing-section";
-import { ToolboxSection } from "@/components/toolbox-section";
-import { ContactTerminal } from "@/components/contact-terminal";
 import { Footer } from "@/components/footer";
 import { CommandMenu } from "@/components/command-menu";
+import { CursorFollower } from "@/components/ui/cursor-follower";
+import { LiquidBackground } from "@/components/ui/liquid-background";
 
 export default function Home() {
   const [commandOpen, setCommandOpen] = useState(false);
 
   return (
-    <main className="relative min-h-screen bg-[#0a0a0a] text-zinc-100 selection:bg-blue-600/30 selection:text-white">
+    <main className="relative min-h-screen bg-[var(--background)] text-[var(--foreground)] selection:bg-emerald-500/30 selection:text-white transition-colors">
+      {/* Smooth Flowing Liquid Ambient Background */}
+      <LiquidBackground />
+
+      {/* Custom Magnetic Cursor */}
+      <CursorFollower />
+
       {/* Subtle Noise Texture Overlay */}
       <div className="noise-overlay" />
 
@@ -26,28 +29,13 @@ export default function Home() {
       {/* Command Palette (⌘K) */}
       <CommandMenu isOpen={commandOpen} setIsOpen={setCommandOpen} />
 
-      {/* 1. Hero Section */}
+      {/* 1. Hero Section (Developer Introduction) */}
       <HeroSection onOpenCommand={() => setCommandOpen(true)} />
 
-      {/* 2. Proof & Live Pulse Bento */}
+      {/* 2. Signals & Proof Bento Grid (Live Pulse) */}
       <ProofBento />
 
-      {/* 3. Featured Projects (Case Studies) */}
-      <FeaturedProjects />
-
-      {/* 4. Journey Timeline */}
-      <JourneyTimeline />
-
-      {/* 5. Writing & Notes */}
-      <WritingSection />
-
-      {/* 6. Curated Toolbox */}
-      <ToolboxSection />
-
-      {/* 7. Contact Terminal */}
-      <ContactTerminal />
-
-      {/* Footer */}
+      {/* 3. Grand Expansive Footer */}
       <Footer />
     </main>
   );

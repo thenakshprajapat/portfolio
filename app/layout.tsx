@@ -15,35 +15,37 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Naksh Prajapati — Systems & Android OS Developer",
+  title: "Naksh — Programmer",
   description:
-    "18-year-old Computer Science student & aspiring Android OS / AOSP developer. Building software, exploring system internals, and learning in public.",
+    "I’m Naksh. I’m a programmer who loves building things, exploring technology, and understanding how software feels to the people using it. Interested in Android UI smoothness, animations, and interaction craft.",
   keywords: [
-    "Naksh Prajapati",
-    "Android OS",
-    "AOSP",
-    "Systems Engineer",
-    "Computer Science",
+    "Naksh",
+    "Programmer",
+    "Android UI",
+    "UI Smoothness",
+    "Animations",
+    "Interaction Design",
+    "Web Development",
+    "C++",
+    "Python",
     "Portfolio",
-    "Bengaluru",
-    "Open Source",
   ],
-  authors: [{ name: "Naksh Prajapati", url: "https://github.com/thenakshprajapat" }],
-  creator: "Naksh Prajapati",
+  authors: [{ name: "Naksh", url: "https://github.com/thenakshprajapat" }],
+  creator: "Naksh",
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://nakshdev.tech",
-    title: "Naksh Prajapati — Systems & Android OS Developer",
+    title: "Naksh — Programmer",
     description:
-      "18-year-old Computer Science student & aspiring Android OS / AOSP developer. Building software, exploring system internals, and learning in public.",
-    siteName: "Naksh Prajapati",
+      "I’m Naksh. I’m a programmer who loves building things, exploring technology, and understanding how software feels to the people using it.",
+    siteName: "Naksh",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Naksh Prajapati — Systems & Android OS Developer",
+    title: "Naksh — Programmer",
     description:
-      "18-year-old Computer Science student & aspiring Android OS / AOSP developer. Building software, exploring system internals, and learning in public.",
+      "I’m Naksh. I’m a programmer who loves building things, exploring technology, and understanding how software feels to the people using it.",
     creator: "@iDevNaksh",
   },
   icons: {
@@ -57,25 +59,43 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark scroll-smooth">
+    <html lang="en" className="dark scroll-smooth" suppressHydrationWarning>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  const stored = localStorage.getItem('theme');
+                  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  const isDark = stored ? stored === 'dark' : prefersDark;
+                  if (isDark) {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Person",
-              name: "Naksh Prajapati",
+              name: "Naksh",
               url: "https://nakshdev.tech",
-              jobTitle: "Computer Science Student & Systems Developer",
+              jobTitle: "Programmer",
               knowsAbout: [
-                "Android OS",
-                "AOSP",
-                "Systems Programming",
+                "Programming",
+                "Android UI",
+                "UI Smoothness & Animations",
+                "Interaction Design",
                 "C++",
-                "Rust",
-                "Linux Kernel",
-                "Next.js",
+                "Python",
+                "Modern Web Development",
                 "Firebase",
               ],
               sameAs: [
@@ -88,7 +108,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased min-h-screen bg-[#0a0a0a] text-zinc-100 selection:bg-blue-600/30 selection:text-white`}
+        className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased min-h-screen bg-[var(--background)] text-[var(--foreground)] selection:bg-sky-500/30 selection:text-white`}
       >
         {children}
       </body>

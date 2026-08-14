@@ -1,57 +1,86 @@
 "use client";
 
+import React, { useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
-import { useEffect, useState } from "react";
 
 export function CursorFollower() {
   const [isVisible, setIsVisible] = useState(false);
-  const cursorX = useMotionValue(-100);
-  const cursorY = useMotionValue(-100);
+  const [isHovered, setIsHovered] = useState(false);
 
-  const springConfig = { damping: 25, stiffness: 400 };
-  const cursorXSpring = useSpring(cursorX, springConfig);
-  const cursorYSpring = useSpring(cursorY, springConfig);
+  const rawX = useMotionValue(-100);
+  const rawY = useMotionValue(-100);
+
+  const springConfig = { damping: 28, stiffness: 450, mass: 0.5 };
+  const smoothX = useSpring(rawX, springConfig);
+  const smoothY = useSpring(rawY, springConfig);
 
   useEffect(() => {
-    const moveCursor = (e: MouseEvent) => {
-      cursorX.set(e.clientX - 16);
-      cursorY.set(e.clientY - 16);
-      setIsVisible(true);
+    // Only enable on fine pointer (desktop mouse)
+    if (typeof window === "undefined" || !window.matchMedia("(pointer: fine)").matches) {
+      return;
+    }
+
+    const onMouseMove = (e: MouseEvent) => {
+      rawX.set(e.clientX);
+      rawY.set(e.clientY);
+      if (!isVisible) setIsVisible(true);
+
+      // Check if hovering over interactive elements
+      const target = e.target as HTMLElement | null;
+      if (target) {
+        const isClickable = Boolean(
+          target.closest("button, a, input, textarea, select, [role='button'], [data-interactive='true'], .spotlight-card")
+        );
+        setIsHovered(isClickable);
+      }
     };
 
-    const hideCursor = () => setIsVisible(false);
+    const onMouseLeave = () => {
+      setIsVisible(false);
+    };
 
-    window.addEventListener("mousemove", moveCursor);
-    window.addEventListener("mouseleave", hideCursor);
+    window.addEventListener("mousemove", onMouseMove, { passive: true });
+    document.addEventListener("mouseleave", onMouseLeave);
 
     return () => {
-      window.removeEventListener("mousemove", moveCursor);
-      window.removeEventListener("mouseleave", hideCursor);
+      window.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseleave", onMouseLeave);
     };
-  }, [cursorX, cursorY]);
+  }, [isVisible, rawX, rawY]);
+
+  if (!isVisible) return null;
 
   return (
-    <>
+    <div className="pointer-events-none fixed inset-0 z-50 overflow-hidden" aria-hidden="true">
+      {/* Smooth Trailing Ring in Emerald Green */}
       <motion.div
-        className="fixed top-0 left-0 w-8 h-8 pointer-events-none z-50 mix-blend-difference"
+        className="fixed top-0 left-0 rounded-full"
         style={{
-          x: cursorXSpring,
-          y: cursorYSpring,
-          opacity: isVisible ? 1 : 0,
+          x: smoothX,
+          y: smoothY,
+          translateX: "-50%",
+          translateY: "-50%",
+          width: isHovered ? 48 : 28,
+          height: isHovered ? 48 : 28,
+          backgroundColor: isHovered ? "rgba(16, 185, 129, 0.08)" : "transparent",
+          borderColor: isHovered ? "rgba(16, 185, 129, 0.7)" : "rgba(16, 185, 129, 0.35)",
+          borderWidth: "1px",
         }}
-      >
-        <div className="w-full h-full rounded-full border-2 border-white" />
-      </motion.div>
+        transition={{ type: "spring", damping: 25, stiffness: 350 }}
+      />
+
+      {/* Center Precise Dot */}
       <motion.div
-        className="fixed top-0 left-0 w-1 h-1 pointer-events-none z-50 bg-white rounded-full"
+        className="fixed top-0 left-0 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.8)]"
         style={{
-          x: cursorX,
-          y: cursorY,
-          opacity: isVisible ? 1 : 0,
-          translateX: 15,
-          translateY: 15,
+          x: rawX,
+          y: rawY,
+          translateX: "-50%",
+          translateY: "-50%",
+          width: isHovered ? 6 : 4.5,
+          height: isHovered ? 6 : 4.5,
         }}
       />
-    </>
+    </div>
   );
 }

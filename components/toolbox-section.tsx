@@ -1,237 +1,123 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
-import { Wrench, Terminal, Cpu, Smartphone, Globe, Database, Sparkles } from "lucide-react";
+import { Wrench, Terminal, Code2, Cloud } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
-import { sound } from "@/lib/sound";
 
-interface ToolGroup {
-  id: string;
-  category: string;
-  subtitle: string;
-  icon: React.ElementType;
-  tools: {
-    name: string;
-    description: string;
-    status: "Primary" | "Active Research" | "Production Ready";
-  }[];
+interface TechItem {
+  name: string;
+  level: string;
+  note: string;
 }
 
-const TOOLBOX_DATA: ToolGroup[] = [
+const TECH_CATEGORIES = [
   {
-    id: "systems",
-    category: "Systems & Low-Level OS",
-    subtitle: "Memory hierarchy, IPC mechanisms, and POSIX primitives",
-    icon: Cpu,
-    tools: [
-      {
-        name: "C / C++",
-        description: "Android JNI bindings, memory management, and OS-level experiments",
-        status: "Primary",
-      },
-      {
-        name: "Rust",
-        description: "Zero-cost abstractions, memory safety, and high-performance CLI tools",
-        status: "Active Research",
-      },
-      {
-        name: "Linux Kernel & Bash",
-        description: "Process scheduling, system calls, shell automation, and cgroups",
-        status: "Production Ready",
-      },
+    title: "Core Languages & Systems",
+    description: "Foundational programming languages and algorithm problem-solving.",
+    icon: Code2,
+    accent: "text-emerald-500",
+    items: [
+      { name: "C / C++", level: "Core Strength", note: "Pointers, memory layout, STL & performance" },
+      { name: "Python", level: "Fluent", note: "Scripting, NLP pipelines & automation" },
+      { name: "DSA", level: "Active Practice", note: "Data structures & algorithmic problem solving" },
+      { name: "A lil bit of Java", level: "Familiar", note: "Object-oriented fundamentals & Android basics" },
     ],
   },
   {
-    id: "android",
-    category: "Android OS & Mobile Platforms",
-    subtitle: "AOSP architecture, framework services, and native engineering",
-    icon: Smartphone,
-    tools: [
-      {
-        name: "AOSP Architecture",
-        description: "Binder IPC, SurfaceFlinger, Hardware Abstraction Layer (HAL)",
-        status: "Active Research",
-      },
-      {
-        name: "Kotlin & Android SDK",
-        description: "Modern declarative Android, Jetpack Compose, and coroutines",
-        status: "Primary",
-      },
-      {
-        name: "ADB & Fastboot",
-        description: "Flashing custom recoveries, partition management, and logcat tracing",
-        status: "Production Ready",
-      },
+    title: "Web & Cloud Platform",
+    description: "Building responsive, modern, full-stack web applications and deployments.",
+    icon: Cloud,
+    accent: "text-teal-500",
+    items: [
+      { name: "Modern Web Development", level: "Daily Driver", note: "Next.js, React, Tailwind CSS, TypeScript" },
+      { name: "Firebase", level: "Production", note: "Firestore, real-time sync, auth & cloud rules" },
+      { name: "Vercel", level: "Deployment", note: "Serverless functions, edge routing & CI/CD" },
     ],
   },
   {
-    id: "web",
-    category: "Web & Product Engineering",
-    subtitle: "High-craft interfaces, fluid typography, and performant state",
-    icon: Globe,
-    tools: [
-      {
-        name: "TypeScript",
-        description: "Strict typing, complex generic models, and scalable architectures",
-        status: "Primary",
-      },
-      {
-        name: "Next.js & React",
-        description: "Server components, edge routing, performance tuning, and hydration",
-        status: "Production Ready",
-      },
-      {
-        name: "Tailwind CSS & Motion",
-        description: "Design systems, fluid spacing, micro-interactions, and glassmorphism",
-        status: "Primary",
-      },
-    ],
-  },
-  {
-    id: "infra",
-    category: "Data, NLP & Infrastructure",
-    subtitle: "Distributed state, text intelligence, and reliable deployments",
-    icon: Database,
-    tools: [
-      {
-        name: "Firebase & Firestore",
-        description: "Real-time snapshot synchronization, offline indexing, security rules",
-        status: "Production Ready",
-      },
-      {
-        name: "Python (NLP & Data)",
-        description: "Text extraction pipelines, statistical topic modeling, automation",
-        status: "Production Ready",
-      },
-      {
-        name: "Git & Linux Toolchains",
-        description: "Trunk-based workflow, open-source git hygiene, automated CI/CD",
-        status: "Primary",
-      },
+    title: "Developer Tools & Environment",
+    description: "Command-line workflows, version control, and Unix operating environments.",
+    icon: Terminal,
+    accent: "text-emerald-500",
+    items: [
+      { name: "Linux", level: "Environment", note: "Bash, shell scripting, POSIX tools & processes" },
+      { name: "GitHub", level: "Daily Workflow", note: "Git version control, PRs & open source" },
     ],
   },
 ];
 
 export function ToolboxSection() {
-  const [selectedGroup, setSelectedGroup] = useState<string>("all");
-
-  const displayData =
-    selectedGroup === "all"
-      ? TOOLBOX_DATA
-      : TOOLBOX_DATA.filter((g) => g.id === selectedGroup);
-
   return (
-    <section id="toolbox" className="py-24 px-6 sm:px-12 max-w-6xl mx-auto">
+    <section id="toolbox" className="py-16 px-6 sm:px-12 max-w-5xl mx-auto">
       {/* Header */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-        className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12"
+        transition={{ duration: 0.4 }}
+        className="mb-12"
       >
-        <div>
-          <div className="flex items-center gap-2 text-xs font-mono text-blue-400 tracking-wider uppercase mb-2">
-            <Wrench className="w-3.5 h-3.5" />
-            <span>Technologies &amp; Systems Craft</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
-            Curated Toolbox
-          </h2>
-          <p className="text-zinc-400 mt-2 text-sm sm:text-base max-w-xl">
-            A deliberate stack chosen for depth and leverage — categorized by actual engineering discipline rather than a generic logo cloud.
-          </p>
+        <div className="flex items-center gap-2 text-xs font-mono text-emerald-500 tracking-wider uppercase mb-2">
+          <Wrench className="size-3.5" />
+          <span>Curated Technologies</span>
         </div>
-
-        {/* Filter Pills */}
-        <div className="flex flex-wrap gap-2">
-          {[
-            { id: "all", label: "All Layers" },
-            { id: "systems", label: "Systems & OS" },
-            { id: "android", label: "Android & Mobile" },
-            { id: "web", label: "Web & UI" },
-            { id: "infra", label: "Data & Infra" },
-          ].map((item) => (
-            <button
-              key={item.id}
-              onClick={() => {
-                setSelectedGroup(item.id);
-                sound.playClick();
-              }}
-              className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all ${
-                selectedGroup === item.id
-                  ? "bg-white text-zinc-950 font-medium shadow-sm"
-                  : "bg-white/[0.04] text-zinc-400 hover:text-white hover:bg-white/[0.08] border border-white/[0.06]"
-              }`}
-            >
-              {item.label}
-            </button>
-          ))}
-        </div>
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--foreground)] tracking-tight">
+          Lab &amp; Stack
+        </h2>
+        <p className="text-[var(--muted)] mt-2 text-sm max-w-lg leading-relaxed">
+          Technologies and tools Naksh uses to build software, experiment, and solve problems.
+        </p>
       </motion.div>
 
-      {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {displayData.map((group, gIdx) => {
-          const Icon = group.icon;
+      {/* 3 Categories Matrix */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {TECH_CATEGORIES.map((category, catIdx) => {
+          const Icon = category.icon;
           return (
             <motion.div
-              key={group.id}
-              initial={{ opacity: 0, y: 20 }}
+              key={category.title}
+              initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: gIdx * 0.08 }}
+              transition={{ duration: 0.4, delay: catIdx * 0.08 }}
             >
-              <SpotlightCard className="p-6 sm:p-7 flex flex-col justify-between h-full" enableSound>
+              <SpotlightCard className="p-6 sm:p-7 flex flex-col justify-between h-full rounded-3xl group" enableSound>
                 <div>
-                  {/* Category Header */}
-                  <div className="flex items-center gap-3 mb-4 pb-4 border-b border-white/[0.06]">
-                    <div className="p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400">
-                      <Icon className="w-4 h-4" />
+                  <div className="flex items-center gap-3 mb-3.5">
+                    <div className="p-2.5 rounded-2xl bg-[var(--secondary)] border border-[var(--border)]">
+                      <Icon className={`size-4.5 ${category.accent}`} />
                     </div>
                     <div>
-                      <h3 className="text-base font-bold text-white tracking-tight">
-                        {group.category}
-                      </h3>
-                      <p className="text-xs text-zinc-400">{group.subtitle}</p>
+                      <h3 className="text-base font-bold text-[var(--foreground)]">{category.title}</h3>
+                      <span className="text-[11px] font-mono text-[var(--muted)]">Curated Stack</span>
                     </div>
                   </div>
 
-                  {/* Tools list */}
-                  <div className="space-y-3">
-                    {group.tools.map((tool) => (
+                  <p className="text-xs text-[var(--muted)] mb-5 leading-relaxed">
+                    {category.description}
+                  </p>
+
+                  <div className="space-y-2.5">
+                    {category.items.map((tech) => (
                       <div
-                        key={tool.name}
-                        className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.04] hover:border-white/[0.1] transition-colors"
+                        key={tech.name}
+                        className="p-3 rounded-2xl bg-[var(--secondary)] border border-[var(--border)] transition-all group-hover:border-[var(--border-highlight)]"
                       >
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="text-sm font-semibold text-white">
-                            {tool.name}
-                          </span>
-                          <span
-                            className={`text-[10px] font-mono px-2 py-0.5 rounded border ${
-                              tool.status === "Primary"
-                                ? "bg-blue-500/10 text-blue-400 border-blue-500/20"
-                                : tool.status === "Active Research"
-                                ? "bg-sky-500/10 text-sky-400 border-sky-500/20"
-                                : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                            }`}
-                          >
-                            {tool.status}
+                        <div className="flex items-center justify-between gap-2 mb-0.5">
+                          <span className="text-xs sm:text-sm font-semibold text-[var(--foreground)]">{tech.name}</span>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-[var(--card)] border border-[var(--border)] text-[var(--muted)] font-medium">
+                            {tech.level}
                           </span>
                         </div>
-                        <p className="text-xs text-zinc-400 mt-1 leading-relaxed">
-                          {tool.description}
-                        </p>
+                        <p className="text-[11px] text-[var(--muted)] font-mono">{tech.note}</p>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-white/[0.06] text-[11px] font-mono text-zinc-500 flex items-center justify-between">
-                  <span>Battle-tested in real projects</span>
-                  <span className="text-zinc-400">Continuous Growth</span>
+                <div className="mt-5 pt-3.5 border-t border-[var(--border)] text-[11px] font-mono text-[var(--muted)]">
+                  <span>Stack Tier 01</span>
                 </div>
               </SpotlightCard>
             </motion.div>

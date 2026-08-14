@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BookOpen, Calendar, Clock, ArrowUpRight, X, Sparkles, Tag } from "lucide-react";
+import { BookOpen, Clock, ArrowUpRight, X } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
 import { sound } from "@/lib/sound";
 
@@ -12,87 +12,67 @@ interface Article {
   excerpt: string;
   date: string;
   readTime: string;
-  category: "Systems & AOSP" | "Growth & Learning" | "Philosophy";
+  category: "Networking & Community" | "Communication & Craft" | "Youth & Engineering";
   content: string;
 }
 
 const ARTICLES: Article[] = [
   {
-    id: "aosp-systems-2026",
-    title: "Why AOSP & Systems Engineering Is the Most Underrated Discipline",
+    id: "networking-in-tech",
+    title: "Why Meeting People & Networking Accelerates Everything",
     excerpt:
-      "While the web converges on high-level abstractions and wrappers, the enduring leverage belongs to engineers who understand the kernel, IPC mechanisms, and memory allocators.",
+      "Code compiles on machines, but momentum compounds through people. Why reaching out, discussing ideas, and building a circle of curious builders is the highest-ROI habit you can form.",
     date: "Aug 2026",
-    readTime: "6 min read",
-    category: "Systems & AOSP",
-    content: `When most developers start building, they gravitate towards high-level UI frameworks. It's understandable: feedback loops are instant, and you can ship an interface in an afternoon.
+    readTime: "5 min read",
+    category: "Networking & Community",
+    content: `When I first started programming, I assumed building software was an isolated craft. You sit in a room, write lines of code, and push them to a repository.
 
-However, as software scales, the abstractions begin to leak. Why does a transaction drop frames? Why does memory pressure trigger an aggressive OOM killer? How does a broadcast securely reach a background daemon without leaking privilege?
+Over the past couple of years, hosting tech sessions, organizing developer events like Perplexity Comet and GitHub Education meetups, and constantly talking to builders, my entire perspective shifted: **the best engineering ideas are born in conversation.**
 
-These questions cannot be answered by looking at JavaScript or high-level wrappers. They are answered by diving into the Android Open Source Project (AOSP) — understanding Binder IPC, the Hardware Abstraction Layer (HAL), Linux cgroups, and memory allocators.
+### The Compounding Power of People:
+1. **Unlocking Hidden Perspective**: Talking to other programmers exposes you to mental models and design patterns you would never encounter in standard documentation.
+2. **Serendipity Vehicle**: When you are genuinely curious about other people's work, opportunities, collaborations, and friendships emerge naturally.
+3. **Energy is Contagious**: Surrounding yourself with people who actually care about craft, smoothness, and building things pushes you to elevate your own standard.
 
-### The Leverage of Low-Level Understanding
-1. **Predictable Performance**: When you know how system services serialize parcels and manage thread pools, you write client code that never blocks the main thread.
-2. **First-Principles Debugging**: Instead of guessing why an OS error occurred, you can trace system call logs through logcat and strace.
-3. **Future Resilience**: Frameworks change every two years; operating system principles remain constant for decades.
-
-Mastering the low-level is not about abandoning high-level product design — it is about having the superpowers to build tools that are indestructible.`,
+Never hide behind your monitor. Reach out to people doing interesting work, ask questions, and share your perspective.`,
   },
   {
-    id: "learning-in-public",
-    title: "Learning in Public: The Compounding ROI of Documenting Early",
+    id: "art-of-talking-tech",
+    title: "Talking, Teaching & Explaining Technology in Plain English",
     excerpt:
-      "Hiding your ignorance is the slowest way to learn. The internet rewards engineers who share messy first iterations and document breakthroughs in the open.",
+      "If you cannot explain a technical concept simply, you don't truly understand it yet. Why sharing what you learn makes you a dramatically sharper programmer.",
     date: "Jul 2026",
     readTime: "4 min read",
-    category: "Growth & Learning",
-    content: `There is a common trap among engineering students: the desire to keep projects private until they are 'perfect'. 
+    category: "Communication & Craft",
+    content: `There is a common misconception in software engineering that using dense jargon signifies intelligence. In reality, the best engineers are the ones who can break down complex ideas into crisp, intuitive analogies.
 
-The problem with waiting for perfection is that software is never done. In the process of waiting, you miss out on the most powerful feedback mechanism in existence: public critique.
+Whenever I learn a new technology — whether it's how Android choreographs frame rendering, how Firebase handles snapshot listeners, or how C++ allocates memory — I try to explain it to someone else.
 
-### Why Shipping Publicly Compounds:
-- **Proof of Work over Credentials**: A public Git commit history showcasing 200+ commits and real problem-solving speaks louder than a GPA.
-- **Serendipity Vehicle**: When you write about a tricky Android Binder issue or a Firebase sync bug, you become a magnet for peers and senior engineers solving the exact same problem.
-- **Clarity of Thought**: If you cannot explain a technical concept in a concise markdown note, you don't truly understand it yet.
+### Why Teaching Compounds Your Code:
+- **Instant Vulnerability Discovery**: You quickly realize the exact boundaries of your own understanding the moment you try to explain it without looking at notes.
+- **De-cluttering Thought**: Teaching forces you to strip away non-essential noise and focus purely on first principles.
+- **Building Community**: Sharing knowledge builds trust. When you teach openly, you invite critique, constructive feedback, and mutual growth.
 
-Build, document the messy middle, and ship early.`,
+Great code solves technical problems; great communication connects technology to humans.`,
   },
   {
-    id: "code-as-medium-thought",
-    title: "Code as a Medium for Thought: Structuring Mental Models",
+    id: "programming-new-youth",
+    title: "Programming in the New Youth: Building Over Credentials",
     excerpt:
-      "Programming is rarely about typing syntax. It is a formal discipline for breaking down ambiguous problems into deterministic, resilient state machines.",
+      "The modern era belongs to young programmers who build, ship, and experiment with software because they genuinely love programming, not because of a checklist.",
     date: "Jun 2026",
     readTime: "5 min read",
-    category: "Philosophy",
-    content: `Before I learned to code, thinking was largely qualitative. Problems felt amorphous, and solutions were often vague intuitions.
+    category: "Youth & Engineering",
+    content: `Programming among the new generation of developers is experiencing a fundamental renaissance. We have access to open-source ecosystems, global communities, and tools that allow anyone with curiosity and an internet connection to ship real software.
 
-Programming forces a cognitive transformation. To write code that executes reliably, you are forced to:
-1. Identify all invariant states.
-2. Handle unexpected edge conditions (network drops, invalid inputs, concurrent writes).
-3. Design clear interfaces that isolate complexity.
+The biggest distinction I see between programmers who stagnate and those who thrive comes down to one variable: **genuine curiosity**.
 
-In many ways, learning computer science is learning epistemology. It gives you a toolkit to model the physical and digital world with high fidelity.`,
-  },
-  {
-    id: "binder-ipc-deep-dive",
-    title: "Deconstructing Android's Binder IPC from First Principles",
-    excerpt:
-      "How Android achieves ultra-fast, secure inter-process communication using Linux shared memory, parcel serialization, and driver ioctls.",
-    date: "May 2026",
-    readTime: "8 min read",
-    category: "Systems & AOSP",
-    content: `In Linux, traditional IPC mechanisms like pipes, sockets, and System V shared memory exist. Why did Android build Binder?
+### What Matters Most:
+1. **Building Real Things**: Reading theory without writing code is like reading about swimming without jumping into the pool. You learn 10x faster when you have a tangible problem you are trying to solve.
+2. **Caring About How Software Feels**: It's not enough for code to merely function; we should care about responsiveness, micro-animations, interaction smoothness, and perceived quality.
+3. **Iterating Without Fear**: Dropping assumptions, building messy first prototypes, and improving them iteratively is how real mastery is built.
 
-### The Core Problem:
-Mobile devices require high security (sandbox isolation per app) combined with near-zero latency for system calls like window management, audio playback, and sensor data. Traditional UNIX sockets require multiple memory copies between kernel and user space.
-
-### Binder's Genius:
-1. **Single Memory Copy**: Binder uses the \`/dev/binder\` kernel driver to map memory once, copying data directly from the caller's user space into the receiving process's address space.
-2. **Built-in UID Verification**: The kernel driver injects the caller's Linux UID/PID into the transaction, preventing process impersonation.
-3. **Reference Counting**: Objects across processes are automatically reference counted and garbage collected when clients disconnect.
-
-Understanding Binder demystifies why Android acts the way it does.`,
+Programming is an art form of thought. Build things because you love the craft.`,
   },
 ];
 
@@ -116,41 +96,41 @@ export function WritingSection() {
   };
 
   return (
-    <section id="writing" className="py-24 px-6 sm:px-12 max-w-6xl mx-auto">
+    <section id="writing" className="py-16 px-6 sm:px-12 max-w-5xl mx-auto">
       {/* Header */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.4 }}
         className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12"
       >
         <div>
-          <div className="flex items-center gap-2 text-xs font-mono text-blue-400 tracking-wider uppercase mb-2">
-            <BookOpen className="w-3.5 h-3.5" />
-            <span>Notes, Learnings &amp; Engineering Garden</span>
+          <div className="flex items-center gap-2 text-xs font-mono text-emerald-500 tracking-wider uppercase mb-2">
+            <BookOpen className="size-3.5" />
+            <span>Mind Garden &amp; Essays</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--foreground)] tracking-tight">
             Writing &amp; Thoughts
           </h2>
-          <p className="text-zinc-400 mt-2 text-sm sm:text-base max-w-xl">
-            Essays and technical notes documenting my understanding of systems, software design, and growth.
+          <p className="text-[var(--muted)] mt-2 text-sm max-w-lg leading-relaxed">
+            Notes and essays on networking, talking, teaching technology, and programming in the new youth.
           </p>
         </div>
 
         {/* Filter */}
         <div className="flex flex-wrap gap-2">
-          {["All", "Systems & AOSP", "Growth & Learning", "Philosophy"].map((cat) => (
+          {["All", "Networking & Community", "Communication & Craft", "Youth & Engineering"].map((cat) => (
             <button
               key={cat}
               onClick={() => {
                 setActiveCategory(cat);
                 sound.playClick();
               }}
-              className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all ${
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-mono transition-all ${
                 activeCategory === cat
-                  ? "bg-white text-zinc-950 font-medium shadow-sm"
-                  : "bg-white/[0.04] text-zinc-400 hover:text-white hover:bg-white/[0.08] border border-white/[0.06]"
+                  ? "bg-[var(--foreground)] text-[var(--background)] font-semibold shadow-sm"
+                  : "bg-[var(--secondary)] text-[var(--muted)] hover:text-[var(--foreground)] border border-[var(--border)]"
               }`}
             >
               {cat}
@@ -160,46 +140,40 @@ export function WritingSection() {
       </motion.div>
 
       {/* Articles Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {filteredArticles.map((article, idx) => (
           <motion.div
             key={article.id}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: idx * 0.08 }}
+            transition={{ duration: 0.4, delay: idx * 0.08 }}
           >
             <div onClick={() => openArticle(article)} className="cursor-pointer h-full">
-              <SpotlightCard className="p-6 sm:p-7 flex flex-col justify-between h-full group" enableSound>
+              <SpotlightCard className="p-6 sm:p-7 flex flex-col justify-between h-full group rounded-3xl" enableSound>
                 <div>
-                  <div className="flex items-center justify-between gap-4 mb-4">
-                    <span className="text-[11px] font-mono text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2.5 py-0.5 rounded">
+                  <div className="flex items-center justify-between gap-2 mb-3.5">
+                    <span className="text-[11px] font-mono text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-medium">
                       {article.category}
                     </span>
-                    <div className="flex items-center gap-3 text-xs font-mono text-zinc-500">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-3 h-3" />
-                        {article.date}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        {article.readTime}
-                      </span>
+                    <div className="flex items-center gap-1.5 text-xs font-mono text-[var(--muted)]">
+                      <Clock className="size-3" />
+                      <span>{article.readTime}</span>
                     </div>
                   </div>
 
-                  <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors">
+                  <h3 className="text-lg sm:text-xl font-bold text-[var(--foreground)] mb-2 group-hover:text-emerald-500 transition-colors leading-snug">
                     {article.title}
                   </h3>
 
-                  <p className="text-sm text-zinc-400 leading-relaxed line-clamp-3">
+                  <p className="text-xs sm:text-sm text-[var(--muted)] leading-relaxed line-clamp-3">
                     {article.excerpt}
                   </p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono text-zinc-400 group-hover:text-white transition-colors">
-                  <span>Read Article</span>
-                  <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <div className="mt-5 pt-3.5 border-t border-[var(--border)] flex items-center justify-between text-xs font-mono text-[var(--muted)] group-hover:text-[var(--foreground)] transition-colors">
+                  <span>Read Essay</span>
+                  <ArrowUpRight className="size-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-emerald-500" />
                 </div>
               </SpotlightCard>
             </div>
@@ -220,24 +194,24 @@ export function WritingSection() {
             />
 
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 16 }}
+              initial={{ opacity: 0, scale: 0.96, y: 12 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 16 }}
+              exit={{ opacity: 0, scale: 0.96, y: 12 }}
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="relative w-full max-w-3xl max-h-[85vh] overflow-y-auto rounded-2xl border border-white/10 bg-[#121214] p-6 sm:p-10 shadow-2xl z-10 scrollbar-thin"
+              className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl border border-[var(--border)] bg-[var(--card)] p-7 sm:p-10 shadow-2xl z-10 scrollbar-thin text-[var(--foreground)]"
             >
               {/* Close button */}
               <button
                 onClick={closeArticle}
-                className="absolute top-6 right-6 p-2 rounded-xl bg-white/5 border border-white/10 text-zinc-400 hover:text-white hover:bg-white/10 transition-colors"
+                className="absolute top-6 right-6 p-2 rounded-2xl bg-[var(--secondary)] border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
                 aria-label="Close modal"
               >
-                <X className="w-5 h-5" />
+                <X className="size-4" />
               </button>
 
               {/* Meta */}
-              <div className="flex flex-wrap items-center gap-3 text-xs font-mono text-zinc-400 mb-4">
-                <span className="text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2.5 py-0.5 rounded">
+              <div className="flex flex-wrap items-center gap-2.5 text-xs font-mono text-[var(--muted)] mb-3">
+                <span className="text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-medium">
                   {selectedArticle.category}
                 </span>
                 <span>•</span>
@@ -247,19 +221,19 @@ export function WritingSection() {
               </div>
 
               {/* Title */}
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight mb-6 pr-10">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[var(--foreground)] tracking-tight mb-5 pr-8 leading-tight">
                 {selectedArticle.title}
               </h2>
 
               {/* Content */}
-              <div className="text-zinc-300 leading-relaxed space-y-4 text-sm sm:text-base border-t border-white/[0.08] pt-6 whitespace-pre-line font-normal">
+              <div className="text-[var(--foreground)] leading-relaxed space-y-3.5 text-sm sm:text-base border-t border-[var(--border)] pt-5 whitespace-pre-line font-normal">
                 {selectedArticle.content}
               </div>
 
               {/* Author footer */}
-              <div className="mt-10 pt-6 border-t border-white/[0.08] flex items-center justify-between text-xs font-mono text-zinc-500">
-                <span>Written by Naksh Prajapati</span>
-                <span>Bengaluru, India</span>
+              <div className="mt-8 pt-4 border-t border-[var(--border)] flex items-center justify-between text-xs font-mono text-[var(--muted)]">
+                <span>Written by Naksh</span>
+                <span>Jaipur, India</span>
               </div>
             </motion.div>
           </div>

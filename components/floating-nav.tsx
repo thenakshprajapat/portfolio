@@ -1,67 +1,57 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  Sparkles,
-  FolderGit2,
-  BookOpen,
-  Milestone,
-  Wrench,
-  Send,
-  Command,
   Volume2,
   VolumeX,
   Menu,
   X,
-  Activity,
+  Command,
+  Sun,
+  Moon,
 } from "lucide-react";
 import Link from "next/link";
 import { sound } from "@/lib/sound";
 
 const NAV_ITEMS = [
-  { id: "hero", label: "Overview" },
-  { id: "proof", label: "Proof" },
-  { id: "projects", label: "Projects" },
-  { id: "journey", label: "Journey" },
-  { id: "writing", label: "Writing" },
-  { id: "toolbox", label: "Toolbox" },
-  { id: "contact", label: "Contact" },
+  { href: "/", label: "Overview" },
+  { href: "/work", label: "Work" },
+  { href: "/mind", label: "Mind" },
+  { href: "/journey", label: "Journey" },
+  { href: "/lab", label: "Lab & Stack" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export function FloatingNav({ onOpenCommand }: { onOpenCommand: () => void }) {
-  const [activeSection, setActiveSection] = useState<string>("hero");
+  const pathname = usePathname();
   const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [isDark, setIsDark] = useState<boolean>(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
 
   useEffect(() => {
     setIsMuted(sound.getMuted());
-
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY + 200;
-      for (const item of NAV_ITEMS) {
-        const element = document.getElementById(item.id);
-        if (element) {
-          const top = element.offsetTop;
-          const height = element.offsetHeight;
-          if (scrollPosition >= top && scrollPosition < top + height) {
-            setActiveSection(item.id);
-          }
-        }
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    const darkActive = document.documentElement.classList.contains("dark");
+    setIsDark(darkActive);
   }, []);
 
-  const scrollTo = (id: string) => {
+  const toggleTheme = () => {
+    sound.playClick();
+    const nextDark = !isDark;
+    setIsDark(nextDark);
+    if (nextDark) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  };
+
+  const handleNavClick = (href: string) => {
     sound.playClick();
     setMobileMenuOpen(false);
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
-    }
   };
 
   const toggleSound = () => {
@@ -71,61 +61,76 @@ export function FloatingNav({ onOpenCommand }: { onOpenCommand: () => void }) {
 
   return (
     <header className="fixed top-5 inset-x-0 z-40 flex justify-center px-4 pointer-events-none">
-      <div className="pointer-events-auto flex items-center justify-between gap-2 sm:gap-4 px-3 sm:px-4 py-2 rounded-full border border-white/[0.08] bg-[#121214]/80 backdrop-blur-xl shadow-2xl shadow-black/80 max-w-4xl w-full">
+      <div className="pointer-events-auto flex items-center justify-between gap-2 sm:gap-4 px-3.5 sm:px-4 py-2 rounded-full border border-[var(--border)] bg-[var(--card)]/80 backdrop-blur-2xl shadow-xl shadow-black/5 dark:shadow-black/80 max-w-4xl w-full">
         {/* Brand / Logo */}
-        <button
-          onClick={() => scrollTo("hero")}
-          className="flex items-center gap-2 px-2 py-1 text-sm font-semibold text-white tracking-tight hover:text-blue-400 transition-colors"
+        <Link
+          href="/"
+          onClick={() => handleNavClick("/")}
+          className="flex items-center gap-2 px-2 py-1 text-sm font-semibold text-[var(--foreground)] tracking-tight hover:text-emerald-500 transition-colors"
         >
-          <span className="w-2 h-2 rounded-full bg-blue-500 shadow-sm shadow-blue-500/80" />
-          <span className="font-mono text-xs sm:text-sm">naksh.dev</span>
-        </button>
+          <span className="size-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#10b981]" />
+          <span className="font-mono text-xs sm:text-sm font-semibold tracking-tight">naksh.dev</span>
+        </Link>
 
         {/* Desktop Nav Links */}
-        <nav className="hidden md:flex items-center gap-1">
+        <nav className="hidden md:flex items-center gap-0.5">
           {NAV_ITEMS.map((item) => {
-            const isActive = activeSection === item.id;
+            const isActive = pathname === item.href;
             return (
-              <button
-                key={item.id}
-                onClick={() => scrollTo(item.id)}
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => handleNavClick(item.href)}
                 className={`relative px-3 py-1.5 rounded-full text-xs font-mono transition-colors ${
-                  isActive ? "text-white font-medium" : "text-zinc-400 hover:text-zinc-200"
+                  isActive ? "text-[var(--foreground)] font-semibold" : "text-[var(--muted)] hover:text-[var(--foreground)]"
                 }`}
               >
                 {isActive && (
                   <motion.div
                     layoutId="active-nav-pill"
-                    className="absolute inset-0 rounded-full bg-white/[0.08] border border-white/[0.12] -z-10"
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    className="absolute inset-0 rounded-full bg-[var(--secondary)] border border-[var(--border-highlight)] -z-10"
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
                   />
                 )}
                 {item.label}
-              </button>
+              </Link>
             );
           })}
         </nav>
 
-        {/* Controls: Sound & Command Palette */}
+        {/* Controls: Theme Toggle, Sound & Command Palette */}
         <div className="flex items-center gap-1.5 sm:gap-2">
+          {/* Theme Switcher Toggle */}
+          <button
+            onClick={toggleTheme}
+            aria-label={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            className="p-1.5 sm:p-2 rounded-full bg-[var(--secondary)] border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-[var(--border-highlight)] transition-colors"
+          >
+            {isDark ? <Sun className="size-3.5 text-amber-400" /> : <Moon className="size-3.5 text-emerald-600" />}
+          </button>
+
+          {/* Sound Toggle */}
           <button
             onClick={toggleSound}
             aria-label={isMuted ? "Unmute sound effects" : "Mute sound effects"}
-            className="p-2 rounded-full bg-white/[0.03] border border-white/[0.06] text-zinc-400 hover:text-white hover:bg-white/[0.08] transition-colors"
+            title={isMuted ? "Unmute sound effects" : "Mute sound effects"}
+            className="p-1.5 sm:p-2 rounded-full bg-[var(--secondary)] border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-[var(--border-highlight)] transition-colors"
           >
-            {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5 text-blue-400" />}
+            {isMuted ? <VolumeX className="size-3.5" /> : <Volume2 className="size-3.5 text-emerald-500" />}
           </button>
 
+          {/* Search Trigger */}
           <button
             onClick={() => {
               sound.playPop();
               onOpenCommand();
             }}
-            className="hidden sm:flex items-center gap-2 px-2.5 py-1.5 rounded-full bg-white/[0.05] hover:bg-white/[0.1] border border-white/[0.08] text-xs font-mono text-zinc-300 transition-colors"
+            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[var(--secondary)] hover:border-[var(--border-highlight)] border border-[var(--border)] text-xs font-mono text-[var(--foreground)] transition-colors"
           >
-            <Command className="w-3 h-3 text-zinc-400" />
+            <Command className="size-3 text-[var(--muted)]" />
             <span>Search</span>
-            <kbd className="px-1.5 py-0.2 rounded bg-black/40 text-[10px] text-zinc-400 border border-white/5">
+            <kbd className="px-1.5 py-0.5 rounded bg-black/10 dark:bg-black/40 text-[10px] text-[var(--muted)] border border-[var(--border)] font-mono">
               ⌘K
             </kbd>
           </button>
@@ -133,51 +138,65 @@ export function FloatingNav({ onOpenCommand }: { onOpenCommand: () => void }) {
           {/* Mobile Menu Trigger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-full bg-white/[0.03] border border-white/[0.06] text-zinc-300"
+            className="md:hidden p-2 rounded-full bg-[var(--secondary)] border border-[var(--border)] text-[var(--foreground)]"
             aria-label="Toggle navigation menu"
           >
-            {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            {mobileMenuOpen ? <X className="size-4" /> : <Menu className="size-4" />}
           </button>
         </div>
       </div>
 
       {/* Mobile Drawer */}
-      {mobileMenuOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          className="pointer-events-auto md:hidden fixed top-20 inset-x-4 p-4 rounded-2xl border border-white/10 bg-[#121214]/95 backdrop-blur-2xl shadow-2xl space-y-1"
-        >
-          {NAV_ITEMS.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => scrollTo(item.id)}
-              className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-left text-sm font-mono transition-colors ${
-                activeSection === item.id
-                  ? "bg-blue-600/15 text-blue-400 font-medium border border-blue-500/20"
-                  : "text-zinc-300 hover:bg-white/5"
-              }`}
-            >
-              <span>{item.label}</span>
-              {activeSection === item.id && <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />}
-            </button>
-          ))}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="pointer-events-auto md:hidden fixed top-18 inset-x-4 p-5 rounded-3xl border border-[var(--border)] bg-[var(--card)]/95 backdrop-blur-2xl shadow-2xl space-y-1.5"
+          >
+            {NAV_ITEMS.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => handleNavClick(item.href)}
+                  className={`w-full flex items-center justify-between px-4 py-2.5 rounded-2xl text-left text-sm font-mono transition-colors ${
+                    isActive
+                      ? "bg-emerald-500/15 text-emerald-500 font-semibold border border-emerald-500/25"
+                      : "text-[var(--foreground)] hover:bg-[var(--secondary)]"
+                  }`}
+                >
+                  <span>{item.label}</span>
+                  {isActive && <span className="size-1.5 rounded-full bg-emerald-500" />}
+                </Link>
+              );
+            })}
 
-          <div className="pt-2 mt-2 border-t border-white/[0.08] flex items-center justify-between px-2">
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onOpenCommand();
-              }}
-              className="flex items-center gap-2 text-xs font-mono text-zinc-400"
-            >
-              <Command className="w-3.5 h-3.5" />
-              <span>Command Palette (⌘K)</span>
-            </button>
-          </div>
-        </motion.div>
-      )}
+            <div className="pt-3 mt-2 border-t border-[var(--border)] flex items-center justify-between px-2">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenCommand();
+                }}
+                className="flex items-center gap-2 text-xs font-mono text-[var(--muted)]"
+              >
+                <Command className="size-3.5" />
+                <span>Command Palette (⌘K)</span>
+              </button>
+
+              <button
+                onClick={toggleTheme}
+                className="flex items-center gap-1.5 text-xs font-mono text-[var(--muted)]"
+              >
+                {isDark ? <Sun className="size-3.5 text-amber-400" /> : <Moon className="size-3.5 text-emerald-600" />}
+                <span>{isDark ? "Light" : "Dark"}</span>
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

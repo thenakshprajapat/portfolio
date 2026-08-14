@@ -13,7 +13,7 @@ interface SpotlightCardProps extends React.HTMLAttributes<HTMLDivElement> {
 export function SpotlightCard({
   children,
   className = "",
-  glowColor = "rgba(0, 102, 255, 0.15)",
+  glowColor = "rgba(16, 185, 129, 0.12)",
   enableSound = false,
   ...props
 }: SpotlightCardProps) {
@@ -45,7 +45,7 @@ export function SpotlightCard({
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className={`relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#111113] transition-all duration-300 hover:border-white/[0.18] ${className}`}
+      className={`relative overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--card)] text-[var(--card-foreground)] transition-all duration-200 hover:border-[var(--border-highlight)] ${className}`}
       {...props}
     >
       {/* Subtle background radial spotlight */}
@@ -58,11 +58,11 @@ export function SpotlightCard({
       />
       {/* Border glow highlight */}
       <div
-        className="pointer-events-none absolute inset-0 rounded-2xl border border-white/20 transition-opacity duration-300 z-10"
+        className="pointer-events-none absolute inset-0 rounded-[inherit] border border-emerald-500/25 transition-opacity duration-300 z-10"
         style={{
           opacity,
-          maskImage: `radial-gradient(220px circle at ${position.x}px ${position.y}px, black, transparent 80%)`,
-          WebkitMaskImage: `radial-gradient(220px circle at ${position.x}px ${position.y}px, black, transparent 80%)`,
+          maskImage: `radial-gradient(250px circle at ${position.x}px ${position.y}px, black, transparent 80%)`,
+          WebkitMaskImage: `radial-gradient(250px circle at ${position.x}px ${position.y}px, black, transparent 80%)`,
         }}
       />
       <div className="relative z-10 h-full w-full">{children}</div>

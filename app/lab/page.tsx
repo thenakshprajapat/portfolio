@@ -2,31 +2,37 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { FlaskConical, ArrowLeft, Terminal, Cpu, Layers } from "lucide-react";
+import { FlaskConical, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
 import { FloatingNav } from "@/components/floating-nav";
 import { CommandMenu } from "@/components/command-menu";
+import { ToolboxSection } from "@/components/toolbox-section";
 import { Footer } from "@/components/footer";
+import { CursorFollower } from "@/components/ui/cursor-follower";
+import { LiquidBackground } from "@/components/ui/liquid-background";
 
 const LAB_EXPERIMENTS = [
   {
-    title: "AOSP Binder IPC Profiler",
-    description: "Tracing Parcel serialization overhead across process sandboxes using strace and custom Linux kernel ftrace hooks.",
-    status: "Active Research",
-    tag: "Systems & C++",
+    title: "Android 120Hz Gesture Physics",
+    description: "Prototyping fluid spring-damping curves, touch velocity tracking, and zero-jank sheet dismissal animations.",
+    status: "Active Lab",
+    tag: "Android UI & Motion",
+    badgeColor: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
   },
   {
-    title: "NLP Exam Pattern Intelligence Engine",
+    title: "NLP Exam Pattern Intelligence",
     description: "Parsing university past question papers to calculate statistical frequency and recurrence probability for exam revision.",
-    status: "Active Lab",
+    status: "Completed Tool",
     tag: "Python & NLP",
+    badgeColor: "bg-teal-500/10 text-teal-500 border-teal-500/20",
   },
   {
     title: "Contacts Offline-First Sync Driver",
-    description: "Experimenting with optimistic local indexedDB caching and conflict-free replicated data types (CRDTs).",
+    description: "Experimenting with optimistic local caching, Firestore snapshot reconciliation, and network partition recovery.",
     status: "Completed Prototype",
-    tag: "Distributed State",
+    tag: "Firebase & Cloud",
+    badgeColor: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
   },
 ];
 
@@ -34,57 +40,70 @@ export default function LabPage() {
   const [commandOpen, setCommandOpen] = useState(false);
 
   return (
-    <main className="relative min-h-screen bg-[#0a0a0a] text-zinc-100 selection:bg-blue-600/30 selection:text-white">
+    <main className="relative min-h-screen bg-[var(--background)] text-[var(--foreground)] selection:bg-emerald-500/30 selection:text-white">
+      <LiquidBackground />
+      <CursorFollower />
       <div className="noise-overlay" />
       <FloatingNav onOpenCommand={() => setCommandOpen(true)} />
       <CommandMenu isOpen={commandOpen} setIsOpen={setCommandOpen} />
 
-      <div className="pt-32 pb-24 px-6 sm:px-12 max-w-4xl mx-auto">
-        <div className="mb-8">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-xs font-mono text-zinc-400 hover:text-white transition-colors"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to Home</span>
-          </Link>
-        </div>
+      <div className="pt-28 pb-6 px-6 sm:px-12 max-w-5xl mx-auto">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-xs font-mono text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+        >
+          <ArrowLeft className="size-3.5" />
+          <span>Back to Overview</span>
+        </Link>
+      </div>
 
-        <div className="mb-12 border-b border-white/[0.08] pb-8">
-          <div className="flex items-center gap-2 text-xs font-mono text-blue-400 tracking-wider uppercase mb-2">
-            <FlaskConical className="w-3.5 h-3.5" />
+      {/* 1. Curated Stack & Technologies */}
+      <ToolboxSection />
+
+      {/* 2. Experimental Sandbox */}
+      <section className="py-16 px-6 sm:px-12 max-w-5xl mx-auto border-t border-[var(--border)]">
+        <div className="mb-10">
+          <div className="flex items-center gap-2 text-xs font-mono text-emerald-500 tracking-wider uppercase mb-2">
+            <FlaskConical className="size-3.5" />
             <span>Experimental Sandbox</span>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-bold text-white tracking-tight">
-            Systems &amp; AI Lab
-          </h1>
-          <p className="text-zinc-400 mt-2 text-sm sm:text-base max-w-2xl">
-            Unfinished experiments, benchmark scripts, and low-level prototypes. If it&apos;s finished and production-ready, it lives in <Link href="/#projects" className="text-blue-400 underline underline-offset-4">Featured Work</Link>.
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--foreground)] tracking-tight">
+            Active Experiments &amp; Prototypes
+          </h2>
+          <p className="text-[var(--muted)] mt-2 text-sm max-w-lg">
+            In-progress explorations in UI motion physics, data parsing, and distributed web synchronization.
           </p>
         </div>
 
-        <div className="grid gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {LAB_EXPERIMENTS.map((exp, idx) => (
             <motion.div
               key={exp.title}
               initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
               transition={{ duration: 0.4, delay: idx * 0.08 }}
             >
-              <SpotlightCard className="p-6" enableSound>
-                <div className="flex items-center justify-between gap-4 mb-2">
-                  <span className="text-[11px] font-mono text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2.5 py-0.5 rounded">
-                    {exp.tag}
-                  </span>
-                  <span className="text-xs font-mono text-zinc-500">{exp.status}</span>
+              <SpotlightCard className="p-6 sm:p-7 flex flex-col justify-between h-full rounded-3xl" enableSound>
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <span className={`text-[11px] font-mono border px-2.5 py-0.5 rounded-full font-medium ${exp.badgeColor}`}>
+                      {exp.tag}
+                    </span>
+                    <span className="text-xs font-mono text-[var(--muted)]">{exp.status}</span>
+                  </div>
+                  <h3 className="text-base sm:text-lg font-bold text-[var(--foreground)] mb-1.5">{exp.title}</h3>
+                  <p className="text-xs text-[var(--muted)] leading-relaxed">{exp.description}</p>
                 </div>
-                <h2 className="text-xl font-bold text-white mb-1.5">{exp.title}</h2>
-                <p className="text-sm text-zinc-400 leading-relaxed">{exp.description}</p>
+
+                <div className="mt-5 pt-3.5 border-t border-[var(--border)] text-[11px] font-mono text-[var(--muted)]">
+                  <span>Lab Prototype</span>
+                </div>
               </SpotlightCard>
             </motion.div>
           ))}
         </div>
-      </div>
+      </section>
 
       <Footer />
     </main>
