@@ -3,37 +3,32 @@
 import React, { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { FloatingNav } from "@/components/floating-nav";
+import { SystemHeader } from "@/components/layout/system-header";
 import { CommandMenu } from "@/components/command-menu";
-import { JourneyTimeline } from "@/components/journey-timeline";
-import { Footer } from "@/components/footer";
-import { CursorFollower } from "@/components/ui/cursor-follower";
-import { LiquidBackground } from "@/components/ui/liquid-background";
+import { TrajectoryMap } from "@/components/sections/trajectory-map";
+import { SystemFooter } from "@/components/layout/system-footer";
 
 export default function JourneyPage() {
   const [commandOpen, setCommandOpen] = useState(false);
 
   return (
-    <main className="relative min-h-screen bg-[var(--background)] text-[var(--foreground)] selection:bg-emerald-500/30 selection:text-white transition-colors">
-      <LiquidBackground />
-      <CursorFollower />
-      <div className="noise-overlay" />
-      <FloatingNav onOpenCommand={() => setCommandOpen(true)} />
+    <main className="relative min-h-screen bg-[var(--background)] text-[var(--foreground)] architectural-grid transition-colors">
+      <SystemHeader onOpenCommand={() => setCommandOpen(true)} />
       <CommandMenu isOpen={commandOpen} setIsOpen={setCommandOpen} />
 
-      <div className="pt-28 pb-4 px-6 sm:px-12 max-w-5xl mx-auto">
+      <div className="pt-24 pb-4 px-4 sm:px-8 max-w-7xl mx-auto font-mono text-xs">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-xs font-mono text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+          className="inline-flex items-center gap-2 text-[var(--muted)] hover:text-[var(--foreground)] transition-colors uppercase"
         >
           <ArrowLeft className="size-3.5" />
-          <span>Back to Overview</span>
+          <span>← Back to Systems Manifesto</span>
         </Link>
       </div>
 
-      <JourneyTimeline />
+      <TrajectoryMap />
 
-      <Footer />
+      <SystemFooter />
     </main>
   );
 }

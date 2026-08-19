@@ -59,7 +59,7 @@ export function LiveStatus() {
 
         setData({
           time: timeString,
-          location: "Jodhpur, Rajasthan",
+          location: "Jaipur, Rajasthan",
           weather: "28°C Haze", // Still mock for now
           spotify: {
             isPlaying: true, // Still mock for now
@@ -79,7 +79,7 @@ export function LiveStatus() {
             timeZone: "Asia/Kolkata",
             timeZoneName: "short" 
           }),
-          location: "Jodhpur, Rajasthan",
+          location: "Jaipur, Rajasthan",
           weather: "Unknown",
           spotify: { isPlaying: false, song: "", artist: "" },
           activity: "Visual Studio Code"

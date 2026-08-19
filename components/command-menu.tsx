@@ -26,7 +26,7 @@ import { sound } from "@/lib/sound";
 interface CommandItem {
   id: string;
   title: string;
-  category: "Pages" | "Projects" | "Actions" | "Socials";
+  category: "PAGES" | "PROJECTS" | "ACTIONS" | "PROFILES";
   icon: React.ElementType;
   shortcut?: string;
   action: () => void;
@@ -87,7 +87,7 @@ export function CommandMenu({
   };
 
   const copyEmail = () => {
-    navigator.clipboard.writeText("hello@nakshdev.tech");
+    navigator.clipboard.writeText("thenakshprajapat@gmail.com");
     setCopied(true);
     sound.playSuccess();
     setTimeout(() => {
@@ -106,51 +106,58 @@ export function CommandMenu({
       // Pages
       {
         id: "page-home",
-        title: "Overview (Home)",
-        category: "Pages",
+        title: "00 // Systems Manifesto (Home)",
+        category: "PAGES",
         icon: Sparkles,
         action: () => navigateTo("/"),
       },
       {
         id: "page-work",
-        title: "All Work & Engineering Projects",
-        category: "Pages",
+        title: "01 // Selected Engineering Artifacts",
+        category: "PAGES",
         icon: FolderGit2,
         action: () => navigateTo("/work"),
       },
       {
+        id: "page-physics",
+        title: "02 // Interactive Physics Sandbox",
+        category: "PAGES",
+        icon: FlaskConical,
+        action: () => navigateTo("/#physics"),
+      },
+      {
+        id: "page-lab",
+        title: "02 // Curated Technologies & Tooling",
+        category: "PAGES",
+        icon: FlaskConical,
+        action: () => navigateTo("/lab"),
+      },
+      {
         id: "page-mind",
-        title: "Mind Garden & Essays",
-        category: "Pages",
+        title: "04 // Dispatches & Mind Garden",
+        category: "PAGES",
         icon: BookOpen,
         action: () => navigateTo("/mind"),
       },
       {
         id: "page-journey",
-        title: "Journey & Milestones",
-        category: "Pages",
+        title: "05 // The Non-Linear Trajectory",
+        category: "PAGES",
         icon: Milestone,
         action: () => navigateTo("/journey"),
       },
       {
-        id: "page-lab",
-        title: "Lab Experiments & Curated Stack",
-        category: "Pages",
-        icon: FlaskConical,
-        action: () => navigateTo("/lab"),
-      },
-      {
         id: "page-contact",
-        title: "Direct Contact Channel",
-        category: "Pages",
+        title: "06 // Direct Transmission Terminal",
+        category: "PAGES",
         icon: Mail,
         action: () => navigateTo("/contact"),
       },
       // Projects
       {
         id: "proj-contacts",
-        title: "Contacts Sync Engine (Firestore / Realtime)",
-        category: "Projects",
+        title: "Contacts Realtime Sync Engine (Firestore / Optimistic UI)",
+        category: "PROJECTS",
         icon: Code2,
         action: () => {
           setIsOpen(false);
@@ -159,8 +166,8 @@ export function CommandMenu({
       },
       {
         id: "proj-paper-analyzer",
-        title: "Paper Analyzer (NLP Exam Intelligence)",
-        category: "Projects",
+        title: "Paper Analyzer (Python NLP Exam Intelligence)",
+        category: "PROJECTS",
         icon: Code2,
         action: () => {
           setIsOpen(false);
@@ -169,8 +176,8 @@ export function CommandMenu({
       },
       {
         id: "proj-cs-resources",
-        title: "CS Resources Hub (Zero-Noise)",
-        category: "Projects",
+        title: "CS Resources Hub (Zero-Noise Static Launchpad)",
+        category: "PROJECTS",
         icon: Code2,
         action: () => {
           setIsOpen(false);
@@ -180,23 +187,23 @@ export function CommandMenu({
       // Actions
       {
         id: "act-theme",
-        title: isDark ? "Switch to Light Mode" : "Switch to Dark Mode",
-        category: "Actions",
+        title: isDark ? "Switch to Architectural Light Mode" : "Switch to Basalt Dark Mode",
+        category: "ACTIONS",
         icon: isDark ? Sun : Moon,
         action: toggleTheme,
       },
       {
         id: "act-email",
-        title: copied ? "Email Copied to Clipboard!" : "Copy Email (hello@nakshdev.tech)",
-        category: "Actions",
+        title: copied ? "Email Copied to Clipboard!" : "Copy Email (thenakshprajapat@gmail.com)",
+        category: "ACTIONS",
         icon: copied ? Check : Copy,
         shortcut: "↵",
         action: copyEmail,
       },
       {
         id: "act-sound",
-        title: isMuted ? "Unmute Audio Feedback" : "Mute Audio Feedback",
-        category: "Actions",
+        title: isMuted ? "Unmute Audio Feedback Synthesizer" : "Mute Audio Feedback Synthesizer",
+        category: "ACTIONS",
         icon: isMuted ? VolumeX : Volume2,
         action: toggleSound,
       },
@@ -204,7 +211,7 @@ export function CommandMenu({
       {
         id: "soc-github",
         title: "GitHub (@thenakshprajapat)",
-        category: "Socials",
+        category: "PROFILES",
         icon: ExternalLink,
         action: () => {
           setIsOpen(false);
@@ -214,7 +221,7 @@ export function CommandMenu({
       {
         id: "soc-x",
         title: "X / Twitter (@iDevNaksh)",
-        category: "Socials",
+        category: "PROFILES",
         icon: ExternalLink,
         action: () => {
           setIsOpen(false);
@@ -224,7 +231,7 @@ export function CommandMenu({
       {
         id: "soc-linkedin",
         title: "LinkedIn (Naksh)",
-        category: "Socials",
+        category: "PROFILES",
         icon: ExternalLink,
         action: () => {
           setIsOpen(false);
@@ -267,45 +274,45 @@ export function CommandMenu({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center pt-24 md:pt-32 px-4">
+        <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 md:pt-28 px-4 font-mono text-xs">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsOpen(false)}
-            className="fixed inset-0 bg-black/75 backdrop-blur-md"
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm"
           />
 
           {/* Modal Container */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.96, y: -10 }}
+            initial={{ opacity: 0, scale: 0.98, y: -6 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: -10 }}
-            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full max-w-xl rounded-3xl border border-[var(--border)] bg-[var(--card)] p-0 shadow-2xl overflow-hidden z-10"
+            exit={{ opacity: 0, scale: 0.98, y: -6 }}
+            transition={{ duration: 0.15 }}
+            className="relative w-full max-w-xl rounded-sm border border-[var(--border-strong)] bg-[var(--card)] p-0 shadow-2xl overflow-hidden z-10"
           >
             {/* Input Bar */}
-            <div className="flex items-center gap-3 border-b border-[var(--border)] px-5 py-4">
-              <Search className="size-5 text-[var(--muted)] shrink-0" />
+            <div className="flex items-center gap-3 border-b border-[var(--border)] px-4 py-3.5 bg-[var(--card)]">
+              <Search className="size-4 text-emerald-500 shrink-0" />
               <input
                 autoFocus
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleKeyDownInMenu}
-                placeholder="Type a page, project, or command..."
-                className="w-full bg-transparent text-sm md:text-base text-[var(--foreground)] placeholder-[var(--muted)] focus:outline-none font-sans"
+                placeholder="Jump to section, artifact, or action..."
+                className="w-full bg-transparent text-sm text-[var(--foreground)] placeholder-[var(--muted)] focus:outline-none font-mono"
               />
-              <span className="hidden sm:inline-block text-[10px] font-mono uppercase tracking-wider text-[var(--muted)] bg-[var(--secondary)] border border-[var(--border)] px-2 py-0.5 rounded-full">
-                ESC to close
+              <span className="hidden sm:inline-block text-[10px] text-[var(--muted)] bg-[var(--secondary)] border border-[var(--border)] px-1.5 py-0.5 rounded-sm">
+                ESC
               </span>
             </div>
 
             {/* List */}
             <div className="max-h-[380px] overflow-y-auto p-2 space-y-1">
               {filtered.length === 0 ? (
-                <div className="py-12 text-center text-sm text-[var(--muted)] font-mono">
-                  No matching results found for &ldquo;{query}&rdquo;
+                <div className="py-12 text-center text-[11px] text-[var(--muted)]">
+                  NO MATCHING SYSTEM ENTRIES FOR &ldquo;{query}&rdquo;
                 </div>
               ) : (
                 filtered.map((item, idx) => {
@@ -316,27 +323,21 @@ export function CommandMenu({
                       key={item.id}
                       onClick={() => item.action()}
                       onMouseEnter={() => setSelectedIndex(idx)}
-                      className={`w-full flex items-center justify-between px-4 py-2.5 rounded-2xl text-left text-sm transition-colors ${
+                      className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-sm text-left transition-colors ${
                         isSelected
-                          ? "bg-emerald-500/15 text-emerald-500 border border-emerald-500/30 font-medium"
+                          ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/30 font-semibold"
                           : "text-[var(--foreground)] hover:bg-[var(--secondary)] border border-transparent"
                       }`}
                     >
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div
-                          className={`p-2 rounded-xl shrink-0 ${
-                            isSelected ? "bg-emerald-500/20 text-emerald-500" : "bg-[var(--secondary)] text-[var(--muted)]"
-                          }`}
-                        >
-                          <Icon className="size-4" />
-                        </div>
-                        <span className="truncate font-medium">{item.title}</span>
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <Icon className="size-3.5 shrink-0 text-emerald-500" />
+                        <span className="truncate text-xs">{item.title}</span>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
-                        <span className="text-[11px] font-mono text-[var(--muted)] uppercase">
+                        <span className="text-[10px] text-[var(--muted)]">
                           {item.category}
                         </span>
-                        {isSelected && <ArrowRight className="size-3.5 text-emerald-500" />}
+                        {isSelected && <ArrowRight className="size-3 text-emerald-500" />}
                       </div>
                     </button>
                   );
@@ -344,13 +345,13 @@ export function CommandMenu({
               )}
             </div>
 
-            {/* Footer info */}
-            <div className="flex items-center justify-between border-t border-[var(--border)] bg-[var(--secondary)] px-5 py-2.5 text-[12px] text-[var(--muted)] font-mono">
+            {/* Footer */}
+            <div className="flex items-center justify-between border-t border-[var(--border)] bg-[var(--secondary)] px-4 py-2 text-[11px] text-[var(--muted)]">
               <div className="flex items-center gap-3">
-                <span>Navigate ↑↓</span>
-                <span>Select ↵</span>
+                <span>[↑↓] NAVIGATE</span>
+                <span>[↵] EXECUTE</span>
               </div>
-              <span className="text-[var(--muted)]">naksh.dev</span>
+              <span>NAKSH // SYSTEM_INDEX</span>
             </div>
           </motion.div>
         </div>

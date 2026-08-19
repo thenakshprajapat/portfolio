@@ -1,38 +1,43 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { FlaskConical, ArrowLeft } from "lucide-react";
+import { ArrowLeft, FlaskConical, Code2, Cloud, Terminal } from "lucide-react";
 import Link from "next/link";
-import { SpotlightCard } from "@/components/ui/spotlight-card";
-import { FloatingNav } from "@/components/floating-nav";
+import { SystemHeader } from "@/components/layout/system-header";
 import { CommandMenu } from "@/components/command-menu";
-import { ToolboxSection } from "@/components/toolbox-section";
-import { Footer } from "@/components/footer";
-import { CursorFollower } from "@/components/ui/cursor-follower";
-import { LiquidBackground } from "@/components/ui/liquid-background";
+import { PhysicsSandbox } from "@/components/sections/physics-sandbox";
+import { SystemFooter } from "@/components/layout/system-footer";
 
-const LAB_EXPERIMENTS = [
+const TECH_CATEGORIES = [
   {
-    title: "Android 120Hz Gesture Physics",
-    description: "Prototyping fluid spring-damping curves, touch velocity tracking, and zero-jank sheet dismissal animations.",
-    status: "Active Lab",
-    tag: "Android UI & Motion",
-    badgeColor: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
+    title: "Core Languages & Systems",
+    description: "Foundational programming languages and algorithm problem-solving.",
+    icon: Code2,
+    items: [
+      { name: "C / C++", level: "Core Strength", note: "Pointers, memory layout, STL & performance" },
+      { name: "Python", level: "Fluent", note: "Scripting, NLP pipelines & automation" },
+      { name: "DSA", level: "Active Practice", note: "Data structures & algorithmic problem solving" },
+      { name: "Java", level: "Familiar", note: "Object-oriented fundamentals & Android basics" },
+    ],
   },
   {
-    title: "NLP Exam Pattern Intelligence",
-    description: "Parsing university past question papers to calculate statistical frequency and recurrence probability for exam revision.",
-    status: "Completed Tool",
-    tag: "Python & NLP",
-    badgeColor: "bg-teal-500/10 text-teal-500 border-teal-500/20",
+    title: "Web & Cloud Platform",
+    description: "Building responsive, modern, full-stack web applications and deployments.",
+    icon: Cloud,
+    items: [
+      { name: "Modern Web Development", level: "Daily Driver", note: "Next.js, React 19, Tailwind CSS, TypeScript" },
+      { name: "Firebase", level: "Production", note: "Firestore, real-time sync, auth & cloud rules" },
+      { name: "Vercel", level: "Deployment", note: "Serverless functions, edge routing & CI/CD" },
+    ],
   },
   {
-    title: "Contacts Offline-First Sync Driver",
-    description: "Experimenting with optimistic local caching, Firestore snapshot reconciliation, and network partition recovery.",
-    status: "Completed Prototype",
-    tag: "Firebase & Cloud",
-    badgeColor: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
+    title: "Developer Tools & Environment",
+    description: "Command-line workflows, version control, and Unix operating environments.",
+    icon: Terminal,
+    items: [
+      { name: "Linux", level: "Environment", note: "Bash, shell scripting, POSIX tools & processes" },
+      { name: "GitHub", level: "Daily Workflow", note: "Git version control, PRs & open source" },
+    ],
   },
 ];
 
@@ -40,72 +45,86 @@ export default function LabPage() {
   const [commandOpen, setCommandOpen] = useState(false);
 
   return (
-    <main className="relative min-h-screen bg-[var(--background)] text-[var(--foreground)] selection:bg-emerald-500/30 selection:text-white">
-      <LiquidBackground />
-      <CursorFollower />
-      <div className="noise-overlay" />
-      <FloatingNav onOpenCommand={() => setCommandOpen(true)} />
+    <main className="relative min-h-screen bg-[var(--background)] text-[var(--foreground)] architectural-grid transition-colors">
+      <SystemHeader onOpenCommand={() => setCommandOpen(true)} />
       <CommandMenu isOpen={commandOpen} setIsOpen={setCommandOpen} />
 
-      <div className="pt-28 pb-6 px-6 sm:px-12 max-w-5xl mx-auto">
+      <div className="pt-24 pb-4 px-4 sm:px-8 max-w-7xl mx-auto font-mono text-xs">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-xs font-mono text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+          className="inline-flex items-center gap-2 text-[var(--muted)] hover:text-[var(--foreground)] transition-colors uppercase"
         >
           <ArrowLeft className="size-3.5" />
-          <span>Back to Overview</span>
+          <span>← Back to Systems Manifesto</span>
         </Link>
       </div>
 
-      {/* 1. Curated Stack & Technologies */}
-      <ToolboxSection />
+      {/* Physics Sandbox Section */}
+      <PhysicsSandbox />
 
-      {/* 2. Experimental Sandbox */}
-      <section className="py-16 px-6 sm:px-12 max-w-5xl mx-auto border-t border-[var(--border)]">
-        <div className="mb-10">
-          <div className="flex items-center gap-2 text-xs font-mono text-emerald-500 tracking-wider uppercase mb-2">
-            <FlaskConical className="size-3.5" />
-            <span>Experimental Sandbox</span>
+      {/* Curated Stack Matrix */}
+      <section className="py-20 px-4 sm:px-8 max-w-7xl mx-auto border-b border-[var(--border)] crosshair-corner">
+        <div className="space-y-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[var(--border)] pb-6">
+            <div>
+              <div className="flex items-center gap-2 font-mono text-xs text-emerald-500 uppercase tracking-widest mb-1.5">
+                <FlaskConical className="size-3.5" />
+                <span>[LAB // CURATED STACK]</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[var(--foreground)]">
+                Technologies &amp; Systems Tooling
+              </h2>
+              <p className="text-xs sm:text-sm text-[var(--muted)] max-w-2xl mt-1.5 leading-relaxed">
+                Disciplines, frameworks, and environments Naksh uses to build software and experiment.
+              </p>
+            </div>
           </div>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--foreground)] tracking-tight">
-            Active Experiments &amp; Prototypes
-          </h2>
-          <p className="text-[var(--muted)] mt-2 text-sm max-w-lg">
-            In-progress explorations in UI motion physics, data parsing, and distributed web synchronization.
-          </p>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {LAB_EXPERIMENTS.map((exp, idx) => (
-            <motion.div
-              key={exp.title}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: idx * 0.08 }}
-            >
-              <SpotlightCard className="p-6 sm:p-7 flex flex-col justify-between h-full rounded-3xl" enableSound>
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className={`text-[11px] font-mono border px-2.5 py-0.5 rounded-full font-medium ${exp.badgeColor}`}>
-                      {exp.tag}
-                    </span>
-                    <span className="text-xs font-mono text-[var(--muted)]">{exp.status}</span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {TECH_CATEGORIES.map((cat) => {
+              const Icon = cat.icon;
+              return (
+                <div
+                  key={cat.title}
+                  className="p-6 sm:p-7 rounded-sm border border-[var(--border)] bg-[var(--card)] space-y-4 flex flex-col justify-between"
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2.5 font-mono text-xs text-[var(--muted)] border-b border-[var(--border)] pb-2.5">
+                      <Icon className="size-4 text-emerald-500" />
+                      <span className="text-[var(--foreground)] font-bold uppercase">{cat.title}</span>
+                    </div>
+
+                    <p className="text-xs text-[var(--muted)] leading-relaxed">{cat.description}</p>
+
+                    <div className="space-y-2 pt-2 font-mono text-xs">
+                      {cat.items.map((item) => (
+                        <div
+                          key={item.name}
+                          className="p-2.5 rounded-sm bg-[var(--secondary)] border border-[var(--border)] space-y-0.5"
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="font-bold text-[var(--foreground)] text-[11px]">{item.name}</span>
+                            <span className="text-[9px] px-1.5 py-0.5 rounded-sm bg-[var(--card)] border border-[var(--border)] text-[var(--muted)] uppercase">
+                              {item.level}
+                            </span>
+                          </div>
+                          <p className="text-[10px] text-[var(--muted)]">{item.note}</p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <h3 className="text-base sm:text-lg font-bold text-[var(--foreground)] mb-1.5">{exp.title}</h3>
-                  <p className="text-xs text-[var(--muted)] leading-relaxed">{exp.description}</p>
-                </div>
 
-                <div className="mt-5 pt-3.5 border-t border-[var(--border)] text-[11px] font-mono text-[var(--muted)]">
-                  <span>Lab Prototype</span>
+                  <div className="pt-3 border-t border-[var(--border)] font-mono text-[10px] text-[var(--muted)]">
+                    <span>STATUS: ACTIVE PROFICIENCY</span>
+                  </div>
                 </div>
-              </SpotlightCard>
-            </motion.div>
-          ))}
+              );
+            })}
+          </div>
         </div>
       </section>
 
-      <Footer />
+      <SystemFooter />
     </main>
   );
 }

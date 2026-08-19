@@ -1,42 +1,26 @@
-"use client";
-
-import React, { useState } from "react";
-import { FloatingNav } from "@/components/floating-nav";
-import { HeroSection } from "@/components/hero-section";
-import { ProofBento } from "@/components/proof-bento";
-import { Footer } from "@/components/footer";
-import { CommandMenu } from "@/components/command-menu";
-import { CursorFollower } from "@/components/ui/cursor-follower";
-import { LiquidBackground } from "@/components/ui/liquid-background";
+import { ManifestoHero } from "@/components/sections/manifesto-hero";
+import { ArtifactDeck } from "@/components/sections/artifact-deck";
+import { AboutBento } from "@/components/sections/about-bento";
+import { MindDispatches } from "@/components/sections/mind-dispatches";
+import { TransmissionTerminal } from "@/components/sections/transmission-terminal";
 
 export default function Home() {
-  const [commandOpen, setCommandOpen] = useState(false);
-
   return (
-    <main className="relative min-h-screen bg-[var(--background)] text-[var(--foreground)] selection:bg-emerald-500/30 selection:text-white transition-colors">
-      {/* Smooth Flowing Liquid Ambient Background */}
-      <LiquidBackground />
+    <main className="space-y-12 sm:space-y-20 pb-20">
+      {/* 1. Rich Interactive Hero with Live Status & Pillars */}
+      <ManifestoHero />
 
-      {/* Custom Magnetic Cursor */}
-      <CursorFollower />
+      {/* 2. Interactive Projects Carousel */}
+      <ArtifactDeck />
 
-      {/* Subtle Noise Texture Overlay */}
-      <div className="noise-overlay" />
+      {/* 3. Story, Stack, GitHub Activity & Timeline */}
+      <AboutBento />
 
-      {/* Floating Navigation Dock */}
-      <FloatingNav onOpenCommand={() => setCommandOpen(true)} />
+      {/* 4. Thoughts & Short Essays */}
+      <MindDispatches />
 
-      {/* Command Palette (⌘K) */}
-      <CommandMenu isOpen={commandOpen} setIsOpen={setCommandOpen} />
-
-      {/* 1. Hero Section (Developer Introduction) */}
-      <HeroSection onOpenCommand={() => setCommandOpen(true)} />
-
-      {/* 2. Signals & Proof Bento Grid (Live Pulse) */}
-      <ProofBento />
-
-      {/* 3. Grand Expansive Footer */}
-      <Footer />
+      {/* 5. Contact Terminal */}
+      <TransmissionTerminal />
     </main>
   );
 }
