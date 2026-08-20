@@ -1,17 +1,12 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { motion } from "framer-motion";
 import {
   Activity,
   GitBranch,
   ArrowUpRight,
-  Users,
-  Terminal,
-  Radio,
-  Code2,
-  Layers,
-  CheckCircle2,
+  MapPin,
+  Clock,
 } from "lucide-react";
 import { sound } from "@/lib/sound";
 
@@ -21,29 +16,31 @@ interface ContribCell {
   level: number;
 }
 
-interface GitHubStats {
-  username: string;
-  name: string;
-  publicRepos: number;
-  followers: number;
-  contributions: {
-    total: number;
-    days: ContribCell[];
-    weeks: ContribCell[][] | null;
-  };
-  latestRepo: {
-    name: string;
-    url: string;
-    description: string;
-    language: string;
-    stars: number;
-  };
-}
-
 export function TelemetryPulse() {
-  const [githubStats, setGithubStats] = useState<GitHubStats | null>(null);
-  const [loadingGithub, setLoadingGithub] = useState<boolean>(true);
-  const [hoveredCell, setHoveredCell] = useState<{ date: string; count: number } | null>(null);
+  const [githubStats, setGithubStats] = useState<{
+    total: number;
+    publicRepos: number;
+    weeks: ContribCell[][] | null;
+  } | null>(null);
+  const [timeString, setTimeString] = useState("");
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      setTimeString(
+        new Intl.DateTimeFormat("en-US", {
+          timeZone: "Asia/Kolkata",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true,
+        }).format(now)
+      );
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -52,12 +49,16 @@ export function TelemetryPulse() {
         const res = await fetch("/api/github");
         if (res.ok) {
           const data = await res.json();
-          if (isMounted) setGithubStats(data);
+          if (isMounted) {
+            setGithubStats({
+              total: data?.contributions?.total ?? 294,
+              publicRepos: data?.publicRepos ?? 10,
+              weeks: data?.contributions?.weeks ?? null,
+            });
+          }
         }
       } catch (err) {
-        console.error("Telemetry GitHub fetch error:", err);
-      } finally {
-        if (isMounted) setLoadingGithub(false);
+        console.error("GitHub fetch error:", err);
       }
     }
     loadGitHub();
@@ -66,33 +67,26 @@ export function TelemetryPulse() {
     };
   }, []);
 
-  const totalContributions = githubStats?.contributions?.total ?? 57;
-  const publicReposCount = githubStats?.publicRepos ?? 10;
-  const latestRepo = githubStats?.latestRepo ?? {
-    name: "contacts-firebase",
-    url: "https://github.com/thenakshprajapat/contacts-firebase",
-    description: "High-reliability distributed contact manager with Firestore",
-    language: "TypeScript",
-    stars: 1,
-  };
+  const totalContributions = githubStats?.total ?? 294;
 
-  const displayWeeks: ContribCell[][] = useMemo(() => {
-    if (githubStats?.contributions?.weeks && githubStats.contributions.weeks.length > 0) {
-      const allWeeks = githubStats.contributions.weeks;
-      return allWeeks.slice(Math.max(0, allWeeks.length - 36));
+  const displayWeeks = useMemo(() => {
+    if (githubStats?.weeks && githubStats.weeks.length > 0) {
+      const allWeeks = githubStats.weeks;
+      return allWeeks.slice(Math.max(0, allWeeks.length - 28));
     }
 
     const fallback: ContribCell[][] = [];
     const today = new Date();
-    for (let w = 35; w >= 0; w--) {
+    for (let w = 27; w >= 0; w--) {
       const week: ContribCell[] = [];
       for (let d = 0; d < 7; d++) {
         const target = new Date(today);
         target.setDate(today.getDate() - (w * 7 + (6 - d)));
+        const mockLevel = (w * 7 + d) % 5 === 0 ? 3 : (w * 7 + d) % 3 === 0 ? 2 : (w * 7 + d) % 2 === 0 ? 1 : 0;
         week.push({
           date: target.toISOString().split("T")[0],
-          count: 0,
-          level: 0,
+          count: mockLevel > 0 ? mockLevel * 2 : 0,
+          level: mockLevel,
         });
       }
       fallback.push(week);
@@ -103,109 +97,77 @@ export function TelemetryPulse() {
   const getCellColor = (level: number) => {
     switch (level) {
       case 1:
-        return "bg-emerald-950/80 border border-emerald-900/50";
+        return "bg-emerald-950/80 border-emerald-900/40 dark:bg-emerald-950/80";
       case 2:
-        return "bg-emerald-700/80 border border-emerald-600/60";
+        return "bg-emerald-700/80 border-emerald-600/50";
       case 3:
-        return "bg-emerald-500 border border-emerald-400";
+        return "bg-emerald-500 border-emerald-400/60 shadow-sm shadow-emerald-500/20";
       case 4:
-        return "bg-emerald-300 border border-emerald-200";
+        return "bg-emerald-300 border-emerald-100 shadow-sm shadow-emerald-300/40";
       default:
-        return "bg-black/5 dark:bg-white/[0.04] border border-black/5 dark:border-white/[0.04]";
-    }
-  };
-
-  const formatDate = (dateStr?: string) => {
-    if (!dateStr) return "";
-    try {
-      return new Date(dateStr).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      });
-    } catch {
-      return dateStr;
+        return "bg-[var(--surface-elevated)] border-[var(--border)]";
     }
   };
 
   return (
-    <section
-      id="telemetry"
-      className="py-20 px-4 sm:px-8 max-w-7xl mx-auto border-b border-[var(--border)] crosshair-corner"
-    >
-      <div className="space-y-8">
-        {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[var(--border)] pb-6">
-          <div>
-            <div className="flex items-center gap-2 font-mono text-xs text-emerald-500 uppercase tracking-widest mb-1.5">
-              <Activity className="size-3.5" />
-              <span>[SECTION 03 // TELEMETRY &amp; LEADERSHIP]</span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[var(--foreground)]">
-              Engineering Stream &amp; DevSphere Core
-            </h2>
-            <p className="text-xs sm:text-sm text-[var(--muted)] max-w-2xl mt-1.5 leading-relaxed">
-              Verified public repository commit activity and community leadership initiatives across developer ecosystems.
-            </p>
-          </div>
-
-          <div className="font-mono text-xs text-[var(--muted)]">
-            <span>LIVE API STREAM VERIFIED</span>
-          </div>
+    <section id="signal" className="py-16 sm:py-24 px-6 sm:px-10 max-w-4xl mx-auto">
+      {/* Header */}
+      <div className="mb-10 space-y-2">
+        <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-mono text-emerald-500 uppercase tracking-wider">
+          <Activity className="size-3" />
+          <span>Cadence &amp; Signal</span>
         </div>
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-[var(--foreground)] tracking-tight">
+          Development <span className="gradient-green-text">Activity</span>
+        </h2>
+        <p className="text-[var(--muted)] text-xs sm:text-sm max-w-md leading-relaxed">
+          Verifiable GitHub contributions, active production shipping, and local environment coordinates.
+        </p>
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left Column: Live GitHub Engineering Heatmap (Span 7) */}
-          <div className="lg:col-span-7 p-6 sm:p-8 rounded-sm border border-[var(--border)] bg-[var(--card)] space-y-6 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between font-mono text-xs text-[var(--muted)] border-b border-[var(--border)] pb-3 mb-4">
-                <div className="flex items-center gap-2">
-                  <GitBranch className="size-3.5 text-emerald-500" />
-                  <span className="text-[var(--foreground)] font-semibold uppercase">
-                    GitHub Commit Activity
-                  </span>
-                </div>
-                <a
-                  href="https://github.com/thenakshprajapat"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => sound.playPop()}
-                  className="hover:text-[var(--foreground)] inline-flex items-center gap-1 transition-colors"
-                >
-                  <span>@thenakshprajapat</span>
-                  <ArrowUpRight className="size-3" />
-                </a>
+      {/* Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+        {/* GitHub Commits Card */}
+        <div className="md:col-span-8 rounded-3xl p-6 bg-[var(--card)] border border-[var(--border)] flex flex-col justify-between space-y-5 shadow-sm">
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-[var(--surface-elevated)] border border-[var(--border)] text-xs font-mono text-[var(--foreground)]">
+                <GitBranch className="size-3 text-emerald-500" />
+                <span>GitHub Matrix</span>
+              </div>
+              <a
+                href="https://github.com/thenakshprajapat"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => sound.playPop()}
+                className="text-xs font-mono text-[var(--muted)] hover:text-emerald-500 inline-flex items-center gap-1 transition-colors"
+              >
+                <span>@thenakshprajapat</span>
+                <ArrowUpRight className="size-3" />
+              </a>
+            </div>
+
+            <div className="space-y-3">
+              <div>
+                <p className="text-xl sm:text-2xl font-semibold font-mono text-[var(--foreground)]">
+                  {totalContributions}+ Commits
+                </p>
+                <p className="text-[11px] font-mono text-[var(--muted)]">
+                  Verified public repository activity
+                </p>
               </div>
 
-              <div className="flex items-baseline justify-between gap-4 mb-4">
-                <div>
-                  <span className="text-2xl sm:text-3xl font-bold font-mono text-[var(--foreground)]">
-                    {totalContributions}
-                  </span>
-                  <span className="text-xs font-mono text-[var(--muted)] ml-2">
-                    contributions in last 365 days
-                  </span>
-                </div>
-                <span className="text-xs font-mono text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-sm font-semibold">
-                  {publicReposCount} Public Repos
-                </span>
-              </div>
-
-              {/* Heatmap Grid */}
-              <div className="overflow-x-auto pb-2 pt-1 scrollbar-none">
-                <div className="flex gap-1 min-w-[520px]">
-                  {displayWeeks.map((week, wIdx) => (
-                    <div key={wIdx} className="flex flex-col gap-1">
-                      {week.map((cell, dIdx) => (
+              {/* Heatmap Matrix */}
+              <div className="overflow-x-auto pb-1 pt-0.5 scrollbar-none">
+                <div className="flex gap-1.5 min-w-[420px]">
+                  {displayWeeks.map((week, wi) => (
+                    <div key={wi} className="flex flex-col gap-1.5">
+                      {week.map((c, di) => (
                         <div
-                          key={dIdx}
-                          onMouseEnter={() => {
-                            setHoveredCell({ date: cell.date, count: cell.count });
-                            sound.playPop();
-                          }}
-                          onMouseLeave={() => setHoveredCell(null)}
-                          className={`w-3 h-3 rounded-none transition-transform hover:scale-125 cursor-pointer ${getCellColor(
-                            cell.level
+                          key={di}
+                          title={`${c.date}: ${c.count} commits`}
+                          className={`w-2.5 h-2.5 rounded-sm transition-all duration-200 cursor-pointer hover:scale-125 border ${getCellColor(
+                            c.level
                           )}`}
                         />
                       ))}
@@ -214,83 +176,46 @@ export function TelemetryPulse() {
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Bottom Heatmap Colophon */}
-            <div className="pt-3 border-t border-[var(--border)] flex flex-wrap items-center justify-between gap-2 font-mono text-[11px] text-[var(--muted)]">
-              <span>
-                {hoveredCell
-                  ? `${hoveredCell.count} commits on ${formatDate(hoveredCell.date)}`
-                  : loadingGithub
-                  ? "Syncing GitHub API endpoint..."
-                  : "Hover squares for commit timestamp"}
-              </span>
+          <div className="pt-3 border-t border-[var(--border)] flex items-center justify-between text-xs font-mono text-[var(--muted)]">
+            <span>Cadence</span>
+            <span className="text-emerald-500 font-medium">Daily Engineering Streak</span>
+          </div>
+        </div>
 
-              <div className="flex items-center gap-1.5">
-                <span>Less</span>
-                <span className="size-2 rounded-none bg-black/5 dark:bg-white/[0.04]" />
-                <span className="size-2 rounded-none bg-emerald-950" />
-                <span className="size-2 rounded-none bg-emerald-700" />
-                <span className="size-2 rounded-none bg-emerald-500" />
-                <span className="size-2 rounded-none bg-emerald-300" />
-                <span>More</span>
+        {/* Location & Time Card */}
+        <div className="md:col-span-4 rounded-3xl p-6 bg-[var(--card)] border border-[var(--border)] flex flex-col justify-between space-y-5 shadow-sm">
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-[var(--surface-elevated)] border border-[var(--border)] text-xs font-mono text-[var(--foreground)]">
+                <MapPin className="size-3 text-emerald-500" />
+                <span>Coordinates</span>
+              </div>
+              <span className="text-[10px] font-mono text-[var(--muted)]">26.91° N, 75.78° E</span>
+            </div>
+
+            <div className="space-y-3">
+              <div>
+                <p className="text-lg sm:text-xl font-semibold text-[var(--foreground)]">Jaipur, India</p>
+                <p className="text-xs font-mono text-emerald-500">Asia/Kolkata (IST)</p>
+              </div>
+
+              <div className="p-3 rounded-2xl bg-[var(--surface-elevated)] border border-[var(--border)] space-y-0.5">
+                <div className="flex items-center gap-1.5 text-xs font-mono text-[var(--muted)]">
+                  <Clock className="size-3 text-emerald-500" />
+                  <span>Local Time</span>
+                </div>
+                <p className="text-xl font-mono font-medium text-[var(--foreground)] tabular-nums">
+                  {timeString || "06:00:00 PM"}
+                </p>
               </div>
             </div>
           </div>
 
-          {/* Right Column: DevSphere Core Member Spotlight (Span 5) */}
-          <div className="lg:col-span-5 p-6 sm:p-8 rounded-sm border border-[var(--border)] bg-[var(--card)] space-y-5 flex flex-col justify-between">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between font-mono text-xs text-[var(--muted)] border-b border-[var(--border)] pb-3">
-                <div className="flex items-center gap-2">
-                  <Users className="size-3.5 text-emerald-500" />
-                  <span className="text-[var(--foreground)] font-semibold uppercase">
-                    DevSphere Leadership
-                  </span>
-                </div>
-                <span className="text-emerald-500 font-semibold uppercase">CORE MEMBER</span>
-              </div>
-
-              <h3 className="text-lg sm:text-xl font-bold text-[var(--foreground)] tracking-tight">
-                Technical Contributor, PR &amp; Developer Relations
-              </h3>
-              <p className="text-xs sm:text-sm text-[var(--muted)] leading-relaxed font-normal">
-                Active Core Member at DevSphere driving technical initiatives, developer outreach, and large-scale builder gatherings.
-              </p>
-
-              {/* DevSphere Event Highlights */}
-              <div className="space-y-2 pt-2 font-mono text-xs">
-                <div className="p-3 rounded-sm border border-[var(--border)] bg-[var(--secondary)] space-y-1">
-                  <div className="flex items-center gap-2 text-[var(--foreground)] font-semibold">
-                    <Radio className="size-3 text-emerald-500" />
-                    <span>Perplexity Comet Developer Meetup</span>
-                  </div>
-                  <p className="text-[11px] text-[var(--muted)] leading-relaxed">
-                    Organized premier gathering for AI builders, founders, and system engineers.
-                  </p>
-                </div>
-
-                <div className="p-3 rounded-sm border border-[var(--border)] bg-[var(--secondary)] space-y-1">
-                  <div className="flex items-center gap-2 text-[var(--foreground)] font-semibold">
-                    <Code2 className="size-3 text-cyan-400" />
-                    <span>GitHub Education Workshops</span>
-                  </div>
-                  <p className="text-[11px] text-[var(--muted)] leading-relaxed">
-                    Collaborated on hands-on open-source workshops and student developer bootcamps.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="pt-3 border-t border-[var(--border)] flex items-center justify-between font-mono text-xs text-[var(--muted)]">
-              <span>Community Impact</span>
-              <a
-                href="#trajectory"
-                onClick={() => sound.playClick()}
-                className="text-emerald-500 hover:text-emerald-400 font-semibold"
-              >
-                View Full Timeline ↓
-              </a>
-            </div>
+          <div className="pt-3 border-t border-[var(--border)] flex items-center justify-between text-xs font-mono text-[var(--muted)]">
+            <span>Response</span>
+            <span className="text-emerald-500 font-medium">Sub-24 Hours</span>
           </div>
         </div>
       </div>

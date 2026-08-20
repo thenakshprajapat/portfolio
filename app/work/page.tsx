@@ -1,4 +1,4 @@
-import { ArtifactDeck } from "@/components/sections/artifact-deck";
+import { GlidingWorkShowcase } from "@/components/sections/gliding-work-showcase";
 
 export const metadata = {
   title: "Work — Naksh",
@@ -7,8 +7,8 @@ export const metadata = {
 
 export default function WorkPage() {
   return (
-    <main className="pt-14 sm:pt-16 min-h-screen">
-      <ArtifactDeck />
+    <main className="pt-20 sm:pt-28 min-h-screen">
+      <GlidingWorkShowcase />
     </main>
   );
 }

@@ -76,7 +76,7 @@ export function CustomCursor() {
 
   return (
     <>
-      {/* Trailing aura ring */}
+      {/* Trailing soft ring */}
       <motion.div
         className="pointer-events-none fixed z-[9998] rounded-full"
         style={{
@@ -87,19 +87,19 @@ export function CustomCursor() {
           opacity: isVisible ? 1 : 0,
         }}
         animate={{
-          width: isHovering ? 46 : 30,
-          height: isHovering ? 46 : 30,
+          width: isHovering ? 44 : 28,
+          height: isHovering ? 44 : 28,
           background: isHovering
-            ? "rgba(56, 189, 248, 0.14)"
+            ? "rgba(16, 185, 129, 0.12)"
             : "rgba(241, 245, 249, 0.05)",
           border: isHovering
-            ? "1px solid rgba(56, 189, 248, 0.5)"
-            : "1px solid rgba(241, 245, 249, 0.18)",
+            ? "1px solid rgba(16, 185, 129, 0.45)"
+            : "1px solid rgba(241, 245, 249, 0.15)",
         }}
         transition={{ duration: 0.18 }}
       />
 
-      {/* Center pinpoint dot */}
+      {/* Center pinpoint */}
       <motion.div
         ref={cursorRef}
         className="pointer-events-none fixed z-[9999] rounded-full"
@@ -113,7 +113,7 @@ export function CustomCursor() {
         animate={{
           width: isClicking ? 5 : isHovering ? 6 : 7,
           height: isClicking ? 5 : isHovering ? 6 : 7,
-          background: isHovering ? "#38bdf8" : "#f1f5f9",
+          background: isHovering ? "#10b981" : "#f1f5f9",
           scale: isClicking ? 0.75 : 1,
         }}
         transition={{ duration: 0.12 }}

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUpRight, X, Sparkles } from "lucide-react";
+import { ArrowUpRight, X, BookOpen } from "lucide-react";
 import { sound } from "@/lib/sound";
 
 interface Essay {
@@ -17,190 +17,171 @@ interface Essay {
 
 const ESSAYS: Essay[] = [
   {
-    id: "independent-shipping",
-    title: "Building independently taught me more than any tutorial ever did.",
+    id: "networking-in-tech",
+    title: "Why Meeting People & Networking Accelerates Everything",
     excerpt:
-      "When there's no team to hide behind, you have to understand the entire stack — from pixel physics to distributed database state.",
+      "Code compiles on machines, but momentum compounds through people. Why reaching out and discussing ideas is the highest-ROI habit you can form.",
     date: "Aug 2026",
-    readTime: "4 min",
-    category: "Independent Building",
-    content: `When you build software alone, you don't get the luxury of siloing yourself.
+    readTime: "5 min",
+    category: "Community & Craft",
+    content: `When I first started programming, I assumed building software was an isolated craft. You sit in a room, write lines of code, and push them to a repository.
 
-You can't say "I only do frontend" when your database listener fails to sync offline state. You can't say "I only write logic" when your gesture choreographies drop frames on a real device.
+As I began reaching out to builders, discussing ideas openly, and constantly talking to programmers who care about craft, my entire perspective shifted: the best engineering ideas are born in conversation.
 
-Building independently forces you into uncomfortable territory immediately:
-1. **End-to-end accountability**: When an animation stutters or a network call hangs, you can't blame an API spec. You have to profile it, debug the call stack, and fix it.
-2. **First-principles problem solving**: You stop copying stack traces and start understanding why memory is allocated a certain way in C++, or how the Android Choreographer renders VSYNC pulses.
-3. **Speed of iteration**: There are no 45-minute standups or PR review queues. You have an intuition, you prototype it, you test it, you ship it.
+### The Compounding Power of People:
+1. **Unlocking Hidden Perspective**: Talking to other programmers exposes you to mental models and design patterns you would never encounter in standard documentation.
+2. **Serendipity Vehicle**: When you are genuinely curious about other people's work, opportunities, collaborations, and friendships emerge naturally.
+3. **Energy is Contagious**: Surrounding yourself with people who actually care about craft, smoothness, and building things pushes you to elevate your own standard.
 
-The best way to get good at software isn't reading about architecture in the abstract. It's building complete things from scratch until the abstractions become second nature.`,
+Never hide behind your monitor. Reach out to people doing interesting work, ask questions, and share your perspective.`,
   },
   {
-    id: "explaining-tech",
-    title: "If you can't explain it simply, you probably don't understand it yet.",
+    id: "art-of-talking-tech",
+    title: "Talking, Teaching & Explaining Technology in Plain English",
     excerpt:
-      "Trying to explain a technical concept in plain English is the fastest way to expose the gaps in your own understanding.",
+      "If you cannot explain a technical concept simply, you don't truly understand it yet. Why sharing what you learn makes you a sharper programmer.",
     date: "Jul 2026",
-    readTime: "3 min",
-    category: "Mental Models",
-    content: `There's a version of understanding something where you nod along while reading documentation. And there's a version where you can explain the core mechanism on a whiteboard with zero jargon.
+    readTime: "4 min",
+    category: "Communication",
+    content: `There is a common misconception in software engineering that using dense jargon signifies intelligence. In reality, the best engineers are the ones who can break down complex ideas into crisp, intuitive analogies.
 
-Those are completely different things.
+Whenever I learn a new technology — whether it's how Android choreographs frame rendering, how Firebase handles snapshot listeners, or how C++ allocates memory — I try to explain it to someone else.
 
-I thought I understood how Android touch dispatching worked until I tried explaining how MotionEvents bubble through ViewGroups to someone else. Within thirty seconds, I realized I only knew the buzzwords, not the actual mechanism.
+### Why Teaching Compounds Your Code:
+- **Instant Vulnerability Discovery**: You quickly realize the exact boundaries of your own understanding the moment you try to explain it without looking at notes.
+- **De-cluttering Thought**: Teaching forces you to strip away non-essential noise and focus purely on first principles.
+- **Building Trust**: Sharing knowledge openly invites constructive feedback and mutual growth.
 
-So I dug into the source code, traced the event loop, built a minimal test case, and worked backwards from first principles.
-
-Whenever I learn something new — whether it's Firestore snapshot listeners, C++ memory alignment, or spring-damping formulas — I force myself to write a 3-sentence summary in plain English.
-
-If you can't summarize a complex system simply, you haven't broken it down to its fundamentals yet.`,
+Great code solves technical problems; great communication connects technology to humans.`,
   },
   {
-    id: "building-over-credentials",
-    title: "Nobody asked to see my grades. They asked to see what I built.",
+    id: "programming-new-youth",
+    title: "Programming in the New Youth: Building Over Credentials",
     excerpt:
-      "At some point I stopped trying to collect certificates and just focused on building software that works. That made all the difference.",
+      "The modern era belongs to young programmers who build, ship, and experiment with software because they genuinely love programming, not because of a checklist.",
     date: "Jun 2026",
-    readTime: "4 min",
-    category: "Execution",
-    content: `Early on, it's easy to get trapped in the credential game — chasing the next certificate, worrying about university rankings, or collecting badges.
+    readTime: "5 min",
+    category: "Youth & Engineering",
+    content: `Programming among the new generation of developers is experiencing a fundamental renaissance. We have access to open-source ecosystems, global communities, and tools that allow anyone with curiosity and an internet connection to ship real software.
 
-Then I started shipping real code, and my entire view changed.
+The biggest distinction I see between programmers who stagnate and those who thrive comes down to one variable: genuine curiosity.
 
-When you show someone a contact manager with sub-60ms optimistic sync that actually works on their phone, or an NLP tool that clusters exam topics in real time, the conversation changes immediately.
+### What Matters Most:
+1. **Building Real Things**: Reading theory without writing code is like reading about swimming without jumping into the pool. You learn 10x faster when you have a tangible problem you are trying to solve.
+2. **Caring About How Software Feels**: It's not enough for code to merely function; we should care about responsiveness, micro-animations, interaction smoothness, and perceived quality.
+3. **Iterating Without Fear**: Dropping assumptions, building prototypes, and improving them iteratively is how real mastery is built.
 
-Nobody asks what your test score was. They ask:
-- How did you handle network partition tolerance?
-- Why did you choose spring damping over cubic-bezier curves for that transition?
-- How did you profile the frame pacing?
-
-Building real software forces you to answer real questions.
-
-Stop waiting until you feel "ready." Start building small, functional things and push them to GitHub. The code speaks for itself.`,
+Programming is an art form of thought. Build things because you love the craft.`,
   },
 ];
 
 export function MindDispatches() {
-  const [selected, setSelected] = useState<Essay | null>(null);
+  const [selectedEssay, setSelectedEssay] = useState<Essay | null>(null);
+
+  const openEssay = (essay: Essay) => {
+    sound.playPop();
+    setSelectedEssay(essay);
+  };
+
+  const closeEssay = () => {
+    sound.playClick();
+    setSelectedEssay(null);
+  };
 
   return (
-    <section id="writing" className="py-16 sm:py-24 px-5 sm:px-8">
-      <div className="max-w-6xl mx-auto space-y-10 sm:space-y-14">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="space-y-2"
-        >
-          <div className="inline-flex items-center gap-1.5 text-xs font-mono uppercase text-sky-400 tracking-widest">
-            <Sparkles className="size-3" />
-            <span>Developer Notes</span>
+    <section id="mind" className="py-16 sm:py-24 px-6 sm:px-10 max-w-4xl mx-auto">
+      <div className="space-y-10">
+        {/* Section Header */}
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-mono text-emerald-500 uppercase tracking-wider">
+            <BookOpen className="size-3" />
+            <span>Thoughts &amp; Perspectives</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-[var(--foreground)]">
-            Perspectives & <span className="gradient-text">Writing</span>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-[var(--foreground)]">
+            Dispatches &amp; <span className="gradient-green-text">Essays</span>
           </h2>
-          <p className="text-sm text-[var(--muted)] max-w-sm leading-relaxed">
-            Short notes on independent software engineering, building systems, and craft.
+          <p className="text-[var(--muted)] text-xs sm:text-sm max-w-md leading-relaxed">
+            Notes on programming philosophy, human connection, and autonomous software engineering.
           </p>
-        </motion.div>
+        </div>
 
-        <div className="divide-y divide-[var(--border)]">
-          {ESSAYS.map((essay, i) => (
-            <motion.div
+        {/* Essay Cards List */}
+        <div className="space-y-3.5">
+          {ESSAYS.map((essay) => (
+            <div
               key={essay.id}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.45, delay: i * 0.08 }}
-              onClick={() => {
-                sound.playPop();
-                setSelected(essay);
-              }}
-              className="group flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 py-6 sm:py-7 -mx-4 px-4 rounded-2xl cursor-pointer hover:bg-[var(--surface-hover)] transition-all"
+              onClick={() => openEssay(essay)}
+              className="group rounded-3xl p-6 bg-[var(--card)] border border-[var(--border)] hover:border-emerald-500/40 transition-all duration-200 flex flex-col sm:flex-row sm:items-center justify-between gap-5 cursor-pointer shadow-sm"
             >
-              <span className="text-4xl sm:text-5xl font-bold font-mono text-[var(--border-strong)] group-hover:text-sky-400 transition-colors shrink-0 sm:w-16">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-
-              <div className="flex-1 min-w-0 space-y-1.5">
-                <div className="flex flex-wrap items-center gap-2 text-[11px] font-mono text-[var(--muted)]">
-                  <span className="text-sky-400 font-semibold">{essay.category}</span>
-                  <span>·</span>
+              <div className="space-y-2 flex-1 min-w-0">
+                <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-[var(--muted)]">
+                  <span className="text-emerald-500 font-medium">{essay.category}</span>
+                  <span>•</span>
                   <span>{essay.date}</span>
-                  <span>·</span>
-                  <span>{essay.readTime} read</span>
+                  <span>•</span>
+                  <span>{essay.readTime}</span>
                 </div>
-                <h3 className="text-base sm:text-lg font-bold text-[var(--foreground)] group-hover:text-sky-300 transition-colors leading-snug">
+                <h3 className="text-lg sm:text-xl font-semibold text-[var(--foreground)] group-hover:text-emerald-500 transition-colors leading-snug">
                   {essay.title}
                 </h3>
-                <p className="text-sm text-[var(--muted)] line-clamp-2 leading-relaxed hidden sm:block">
+                <p className="text-xs sm:text-sm text-[var(--muted)] line-clamp-2 leading-relaxed">
                   {essay.excerpt}
                 </p>
               </div>
 
-              <div className="shrink-0 size-9 sm:size-10 rounded-full border border-[var(--border)] group-hover:border-sky-400 group-hover:bg-sky-400 flex items-center justify-center transition-all self-start sm:self-center">
-                <ArrowUpRight className="size-4 text-[var(--muted)] group-hover:text-[#040914] transition-colors" />
+              <div className="size-9 rounded-full border border-[var(--border)] bg-[var(--surface-elevated)] group-hover:border-emerald-500/40 group-hover:bg-emerald-500/10 flex items-center justify-center transition-all shrink-0 self-start sm:self-center">
+                <ArrowUpRight className="size-3.5 text-[var(--muted)] group-hover:text-emerald-500 transition-colors" />
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
 
       {/* Reader Modal */}
       <AnimatePresence>
-        {selected && (
-          <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-6">
+        {selectedEssay && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => {
-                sound.playClick();
-                setSelected(null);
-              }}
-              className="fixed inset-0 bg-black/85 backdrop-blur-xl"
+              onClick={closeEssay}
+              className="fixed inset-0 bg-black/70 backdrop-blur-md"
             />
             <motion.div
-              initial={{ opacity: 0, y: 40, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 40, scale: 0.98 }}
-              transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
-              className="relative w-full sm:max-w-xl max-h-[90vh] sm:max-h-[82vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl border border-[var(--border-strong)] bg-[var(--surface)] p-6 sm:p-10 z-10 shadow-2xl"
+              initial={{ opacity: 0, scale: 0.96, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: 12 }}
+              transition={{ duration: 0.2 }}
+              className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8 shadow-2xl z-10 space-y-5"
             >
-              <div className="sm:hidden w-10 h-1 rounded-full bg-[var(--border-strong)] mx-auto mb-5" />
-
               <button
-                onClick={() => {
-                  sound.playClick();
-                  setSelected(null);
-                }}
+                onClick={closeEssay}
                 className="absolute top-5 right-5 p-2 rounded-full text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-elevated)] transition-colors cursor-pointer"
               >
                 <X className="size-4" />
               </button>
 
-              <div className="flex flex-wrap items-center gap-2 text-[11px] font-mono text-[var(--muted)] mb-3">
-                <span className="text-sky-400 font-semibold">{selected.category}</span>
-                <span>·</span>
-                <span>{selected.date}</span>
-                <span>·</span>
-                <span>{selected.readTime}</span>
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-2 text-xs font-mono text-[var(--muted)]">
+                  <span className="text-emerald-500 font-medium">{selectedEssay.category}</span>
+                  <span>•</span>
+                  <span>{selectedEssay.date}</span>
+                  <span>•</span>
+                  <span>{selectedEssay.readTime} read</span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-semibold tracking-tight text-[var(--foreground)] pr-8 leading-snug">
+                  {selectedEssay.title}
+                </h2>
               </div>
 
-              <h2 className="text-xl sm:text-2xl font-bold tracking-tight mb-6 pr-8 leading-tight text-[var(--foreground)]">
-                {selected.title}
-              </h2>
-
-              <div className="text-sm sm:text-base text-[var(--muted)] leading-relaxed space-y-4 border-t border-[var(--border)] pt-6 whitespace-pre-line [&>p]:text-[var(--foreground)]">
-                {selected.content}
+              <div className="text-xs sm:text-sm text-[var(--foreground)] leading-relaxed space-y-3.5 border-t border-[var(--border)] pt-5 whitespace-pre-line font-normal">
+                {selectedEssay.content}
               </div>
 
-              <div className="mt-8 pt-4 border-t border-[var(--border)] flex items-center justify-between text-xs text-[var(--muted)]">
-                <span>Naksh · Independent Developer</span>
-                <a href="mailto:hey@naksh.cc" className="text-sky-400 hover:underline">
-                  hey@naksh.cc
-                </a>
+              <div className="pt-3.5 border-t border-[var(--border)] flex items-center justify-between text-xs font-mono text-[var(--muted)]">
+                <span>Written by Naksh Prajapati</span>
+                <span className="text-emerald-500">hey@naksh.cc</span>
               </div>
             </motion.div>
           </div>

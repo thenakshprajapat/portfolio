@@ -30,7 +30,7 @@ export function MagneticButton({
   disabled,
   "aria-label": ariaLabel,
 }: MagneticButtonProps) {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<any>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
   const handleMouseMove = (e: React.MouseEvent) => {

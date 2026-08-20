@@ -10,82 +10,40 @@ import {
   ArrowDown,
   ArrowUpRight,
   MapPin,
-  Coffee,
+  Sparkles,
   Smartphone,
   Terminal,
   Layers,
-  Zap,
-  Code2,
 } from "lucide-react";
-import { MarqueeTicker } from "@/components/ui/marquee-ticker";
-import { MagneticButton } from "@/components/ui/magnetic-button";
 import { sound } from "@/lib/sound";
-
-const SKILLS_TAPE = [
-  { label: "Independent Developer" },
-  { label: "Android UI & 120fps Motion" },
-  { label: "C / C++ Systems" },
-  { label: "React 19 & Next.js" },
-  { label: "Firebase & Firestore" },
-  { label: "Python" },
-  { label: "Physics-based Gestures" },
-  { label: "TypeScript" },
-  { label: "Solo Full-Stack" },
-  { label: "Clean Code Craft" },
-];
 
 const SOCIALS = [
   { icon: Github, href: "https://github.com/thenakshprajapat", label: "GitHub" },
-  { icon: Twitter, href: "https://twitter.com/idevnaksh", label: "Twitter" },
+  { icon: Twitter, href: "https://twitter.com/idevnaksh", label: "X / Twitter" },
   { icon: Linkedin, href: "https://linkedin.com/in/thenakshprajapat", label: "LinkedIn" },
   { icon: Mail, href: "mailto:hey@naksh.cc", label: "Email" },
 ];
 
-const HIGHLIGHT_CARDS = [
+const CRAFT_PILLARS = [
   {
     icon: Smartphone,
-    title: "Android UI & Motion",
-    desc: "120Hz gesture response, spring physics, and fluid interactions engineered for maximum smoothness.",
-    tag: "Primary Focus",
-    tagColor: "bg-sky-500/10 text-sky-400 border-sky-500/20",
+    title: "Android UI & 120Hz Motion",
+    desc: "Physics-based spring curves, choreographed gestures, and perceived touch latency reduction.",
   },
   {
     icon: Terminal,
-    title: "C++ & Systems",
-    desc: "Memory management, algorithmic optimization, and deep understanding of how hardware executes code.",
-    tag: "Core Foundation",
-    tagColor: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
+    title: "C++ & Systems Foundations",
+    desc: "Cache-conscious memory layout, performance architectures, and algorithmic speed.",
   },
   {
     icon: Layers,
-    title: "End-to-End Shipping",
-    desc: "Taking ideas from blank canvas to production web and mobile apps with realtime backend pipelines.",
-    tag: "Solo Builder",
-    tagColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+    title: "Distributed Realtime Web",
+    desc: "Optimistic local state, real-time snapshot sync, and zero-jank frontend interactions.",
   },
 ];
 
-function LetterByLetter({ text, delay = 0 }: { text: string; delay?: number }) {
-  return (
-    <>
-      {text.split("").map((c, i) => (
-        <motion.span
-          key={i}
-          className="inline-block"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: delay + i * 0.05, ease: [0.23, 1, 0.32, 1] }}
-        >
-          {c === " " ? "\u00A0" : c}
-        </motion.span>
-      ))}
-    </>
-  );
-}
-
 export function ManifestoHero() {
   const [time, setTime] = useState("");
-  const [coffeeCount, setCoffeeCount] = useState(3);
 
   useEffect(() => {
     const tick = () =>
@@ -103,11 +61,6 @@ export function ManifestoHero() {
     return () => clearInterval(id);
   }, []);
 
-  const incrementCoffee = () => {
-    sound.playSuccess();
-    setCoffeeCount((c) => c + 1);
-  };
-
   const scrollTo = (id: string) => {
     sound.playPop();
     const el = document.getElementById(id);
@@ -115,210 +68,131 @@ export function ManifestoHero() {
   };
 
   return (
-    <section id="hero" className="relative min-h-screen flex flex-col justify-between pt-20 sm:pt-24 pb-10 overflow-hidden">
-      {/* Background ambient lighting */}
-      <div className="pointer-events-none absolute top-10 left-1/2 -translate-x-1/2 w-[750px] h-[350px] bg-gradient-to-b from-sky-500/10 via-indigo-500/5 to-transparent blur-[100px] -z-10" />
+    <section id="hero" className="relative pt-24 sm:pt-32 pb-12 sm:pb-16 px-6 sm:px-10 max-w-4xl mx-auto">
+      {/* Background Soft Glow */}
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[400px] rounded-full bg-emerald-500/5 blur-[120px] pointer-events-none -z-10" />
 
-      {/* Grid pattern */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.03] -z-10"
-        style={{
-          backgroundImage:
-            "linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
-        }}
-      />
-
-      <div className="relative z-10 px-5 sm:px-8 lg:px-12 max-w-6xl mx-auto w-full">
-        {/* Top meta badge */}
+      <div className="space-y-8 sm:space-y-10">
+        {/* Top Status Pill */}
         <motion.div
-          initial={{ opacity: 0, y: -10 }}
+          initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="flex flex-wrap items-center gap-3 mb-8"
+          transition={{ duration: 0.4 }}
+          className="flex flex-wrap items-center gap-2.5"
         >
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[var(--surface-elevated)] border border-[var(--border-strong)] text-xs font-mono text-[var(--foreground)] shadow-sm">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--surface-elevated)] border border-[var(--border)] text-xs font-mono text-[var(--foreground)]">
             <span className="relative flex size-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75" />
-              <span className="relative inline-flex rounded-full size-2 bg-sky-500" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full size-2 bg-emerald-400" />
             </span>
-            <MapPin className="size-3 text-sky-400" />
+            <MapPin className="size-3 text-emerald-500" />
             <span>Jaipur, India</span>
-            <span className="text-[var(--muted-foreground)]">·</span>
-            <span className="tabular-nums text-sky-300 font-medium">{time || "IST"}</span>
+            <span className="text-[var(--muted-foreground)]">•</span>
+            <span className="tabular-nums text-emerald-600 dark:text-emerald-400">{time || "IST"}</span>
           </div>
 
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[var(--surface)] border border-[var(--border)] text-xs font-mono text-[var(--muted)]">
-            <Zap className="size-3 text-amber-400" />
-            <span>Role: Independent Developer</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--surface)] border border-[var(--border)] text-xs font-mono text-[var(--muted)]">
+            <Sparkles className="size-3 text-emerald-500" />
+            <span>Available for projects</span>
           </div>
         </motion.div>
 
-        {/* Main Headline & Intro */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          <div className="lg:col-span-8 space-y-6">
-            <div>
-              <motion.span
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                className="block text-sm sm:text-base font-mono text-[var(--muted)] tracking-wide mb-2"
-              >
-                Independent Developer
-              </motion.span>
-              <h1 className="text-[clamp(3.2rem,8vw,7rem)] font-bold tracking-[-0.03em] leading-[0.95] text-[var(--foreground)]">
-                <LetterByLetter text="Naksh." delay={0.3} />
-              </h1>
-            </div>
+        {/* Main Headline (Refined, Less Bold, Smaller) */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.5 }}
+          className="space-y-3"
+        >
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-[var(--foreground)] leading-[1.12]">
+            Hey, I&apos;m <span className="gradient-green-text">Naksh</span>.
+          </h1>
+          <p className="text-lg sm:text-xl md:text-2xl text-[var(--muted)] font-normal leading-snug">
+            Software engineer building applications with obsession over{" "}
+            <span className="text-[var(--foreground)] font-medium underline decoration-emerald-500/30 underline-offset-4">
+              Android UI motion mechanics
+            </span>
+            , fluid gesture response, and C++ systems.
+          </p>
+        </motion.div>
 
-            <motion.p
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8, duration: 0.6 }}
-              className="text-lg sm:text-xl text-[var(--muted)] max-w-2xl leading-relaxed"
+        {/* Clean Concise About */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+          className="space-y-3 text-sm sm:text-base text-[var(--muted)] leading-relaxed max-w-2xl"
+        >
+          <p>
+            I&apos;m an independent developer based in Jaipur. I build standalone applications with attention to zero-jank frame rendering, distributed optimistic state, and tactile physics.
+          </p>
+        </motion.div>
+
+        {/* Social Links & Primary CTAs */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+          className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t border-[var(--border)]"
+        >
+          {/* Action buttons */}
+          <div className="flex flex-wrap items-center gap-2.5">
+            <button
+              onClick={() => scrollTo("work")}
+              className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-emerald-500 text-white font-mono text-xs font-medium uppercase tracking-wider hover:bg-emerald-600 transition-all shadow-md shadow-emerald-500/15 cursor-pointer"
             >
-              I build and ship software independently. Obsessed with{" "}
-              <span className="text-[var(--foreground)] font-semibold">Android UI motion</span>,
-              interaction physics, and low-level systems. I turn raw ideas into finished, high-performance products.
-            </motion.p>
+              <span>Explore Builds</span>
+              <ArrowDown className="size-3" />
+            </button>
 
-            {/* Action buttons & Socials */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1, duration: 0.5 }}
-              className="flex flex-wrap items-center gap-4 pt-2"
+            <button
+              onClick={() => scrollTo("contact")}
+              className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full border border-[var(--border-strong)] bg-[var(--surface)] text-[var(--foreground)] font-mono text-xs font-medium uppercase tracking-wider hover:border-emerald-500 hover:text-emerald-500 transition-all cursor-pointer"
             >
-              <MagneticButton
-                as="button"
-                onClick={() => scrollTo("work")}
-                strength={0.2}
-                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-[var(--foreground)] text-[var(--background)] font-bold text-sm hover:bg-sky-400 hover:text-[#040914] shadow-lg shadow-sky-500/10 transition-all cursor-pointer"
-              >
-                <span>View Projects</span>
-                <ArrowDown className="size-4" />
-              </MagneticButton>
-
-              <MagneticButton
-                as="button"
-                onClick={() => scrollTo("contact")}
-                strength={0.2}
-                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full border border-[var(--border-strong)] bg-[var(--surface)] text-[var(--foreground)] text-sm font-semibold hover:border-sky-400 hover:text-sky-400 transition-all cursor-pointer"
-              >
-                <span>Let&apos;s Talk</span>
-                <ArrowUpRight className="size-4" />
-              </MagneticButton>
-
-              <div className="flex items-center gap-2 pl-2">
-                {SOCIALS.map(({ icon: Icon, href, label }) => (
-                  <a
-                    key={label}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => sound.playPop()}
-                    aria-label={label}
-                    className="p-2.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] text-[var(--muted)] hover:text-sky-400 hover:border-sky-500/40 transition-all"
-                  >
-                    <Icon className="size-4" />
-                  </a>
-                ))}
-              </div>
-            </motion.div>
+              <span>Get in Touch</span>
+              <ArrowUpRight className="size-3" />
+            </button>
           </div>
 
-          {/* Independent Developer Live Status Card with interactive coffee widget */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.6, duration: 0.6 }}
-            className="lg:col-span-4"
-          >
-            <div className="bento-card p-6 space-y-5 bg-gradient-to-br from-[var(--surface-elevated)] to-[var(--surface)] border-[var(--border-strong)] shadow-xl">
-              <div className="flex items-center justify-between pb-3 border-b border-[var(--border)]">
-                <div className="flex items-center gap-2 text-xs font-mono font-semibold text-[var(--foreground)]">
-                  <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
-                  Independent Builder Mode
-                </div>
-                <span className="text-[10px] font-mono text-[var(--muted)]">2026</span>
-              </div>
+          {/* Direct Social Links */}
+          <div className="flex items-center gap-1.5">
+            {SOCIALS.map(({ icon: Icon, href, label }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => sound.playPop()}
+                aria-label={label}
+                title={label}
+                className="p-2.5 rounded-full border border-[var(--border)] bg-[var(--surface)] text-[var(--muted)] hover:text-emerald-500 hover:border-emerald-500/40 transition-all cursor-pointer"
+              >
+                <Icon className="size-3.5" />
+              </a>
+            ))}
+          </div>
+        </motion.div>
 
-              <div className="space-y-3 text-xs">
-                <div className="flex items-center justify-between py-1 border-b border-[var(--border)]">
-                  <span className="text-[var(--muted)]">Role</span>
-                  <span className="font-mono font-bold text-sky-400">Independent Developer</span>
-                </div>
-                <div className="flex items-center justify-between py-1 border-b border-[var(--border)]">
-                  <span className="text-[var(--muted)]">Focus</span>
-                  <span className="font-mono font-medium text-[var(--foreground)]">Android Motion & Systems</span>
-                </div>
-                <div className="flex items-center justify-between py-1 border-b border-[var(--border)]">
-                  <span className="text-[var(--muted)]">Contact</span>
-                  <a href="mailto:hey@naksh.cc" className="font-mono text-sky-400 hover:underline">
-                    hey@naksh.cc
-                  </a>
-                </div>
-              </div>
-
-              {/* Interactive Coffee Widget */}
-              <div className="p-3.5 rounded-xl bg-[var(--surface)] border border-[var(--border)] flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="size-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
-                    <Coffee className="size-4" />
-                  </div>
-                  <div>
-                    <div className="text-[11px] font-mono font-bold text-[var(--foreground)]">
-                      Coffee done
-                    </div>
-                    <div className="text-[10px] font-mono text-[var(--muted)]">
-                      {coffeeCount} cups brewed
-                    </div>
-                  </div>
-                </div>
-                <button
-                  onClick={incrementCoffee}
-                  className="px-2.5 py-1 rounded-lg bg-[var(--surface-elevated)] border border-[var(--border-strong)] hover:border-amber-400 text-[10px] font-mono font-semibold text-amber-400 transition-colors cursor-pointer"
-                  title="Click to brew another cup"
-                >
-                  +1 Cup
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Feature pillars */}
+        {/* 3 Core Craft Focus Pillars */}
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2, duration: 0.6 }}
-          className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-14"
+          transition={{ delay: 0.4, duration: 0.5 }}
+          className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-4"
         >
-          {HIGHLIGHT_CARDS.map(({ icon: Icon, title, desc, tag, tagColor }) => (
-            <div key={title} className="bento-card p-5 space-y-3 bg-[var(--surface)] hover:border-sky-500/30 transition-all">
-              <div className="flex items-center justify-between">
-                <div className="size-9 rounded-xl bg-[var(--surface-elevated)] border border-[var(--border)] flex items-center justify-center text-sky-400">
-                  <Icon className="size-4" />
-                </div>
-                <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${tagColor}`}>
-                  {tag}
-                </span>
+          {CRAFT_PILLARS.map(({ icon: Icon, title, desc }) => (
+            <div
+              key={title}
+              className="rounded-2xl p-5 bg-[var(--card)] border border-[var(--border)] hover:border-emerald-500/30 transition-all space-y-2.5 shadow-sm"
+            >
+              <div className="size-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500">
+                <Icon className="size-3.5" />
               </div>
-              <h3 className="text-sm font-bold text-[var(--foreground)]">{title}</h3>
+              <h3 className="text-sm font-semibold text-[var(--foreground)]">{title}</h3>
               <p className="text-xs text-[var(--muted)] leading-relaxed">{desc}</p>
             </div>
           ))}
         </motion.div>
-      </div>
-
-      {/* Marquee ticker */}
-      <div className="border-t border-[var(--border)] bg-[var(--surface)]/70 backdrop-blur-sm py-3.5 mt-16">
-        <MarqueeTicker
-          items={SKILLS_TAPE}
-          speed={36}
-          separator="✦"
-          itemClassName="text-[var(--muted)] text-xs font-mono tracking-wider uppercase hover:text-sky-300 transition-colors"
-        />
       </div>
     </section>
   );

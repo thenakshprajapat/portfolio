@@ -1,25 +1,29 @@
+import { IntroLoader } from "@/components/ui/intro-loader";
 import { ManifestoHero } from "@/components/sections/manifesto-hero";
-import { ArtifactDeck } from "@/components/sections/artifact-deck";
-import { AboutBento } from "@/components/sections/about-bento";
+import { GlidingWorkShowcase } from "@/components/sections/gliding-work-showcase";
+import { TelemetryPulse } from "@/components/sections/telemetry-pulse";
 import { MindDispatches } from "@/components/sections/mind-dispatches";
 import { TransmissionTerminal } from "@/components/sections/transmission-terminal";
 
 export default function Home() {
   return (
-    <main className="space-y-12 sm:space-y-20 pb-20">
-      {/* 1. Rich Interactive Hero with Live Status & Pillars */}
+    <main className="space-y-4 sm:space-y-8 pb-12">
+      {/* 1. Cinematic Clean Intro Loader */}
+      <IntroLoader />
+
+      {/* 2. Spacious, Uncongested Hero (Hey I'm Naksh, About & Socials) */}
       <ManifestoHero />
 
-      {/* 2. Interactive Projects Carousel */}
-      <ArtifactDeck />
+      {/* 3. 5-Second 3D Gliding Work Showcase (Center Focused & Blurred Sides) */}
+      <GlidingWorkShowcase />
 
-      {/* 3. Story, Stack, GitHub Activity & Timeline */}
-      <AboutBento />
+      {/* 4. Activity & Verified Cadence */}
+      <TelemetryPulse />
 
-      {/* 4. Thoughts & Short Essays */}
+      {/* 5. Editorial Perspectives & Thoughts */}
       <MindDispatches />
 
-      {/* 5. Contact Terminal */}
+      {/* 6. Direct Contact Channel */}
       <TransmissionTerminal />
     </main>
   );

@@ -6,89 +6,72 @@ import {
   Smartphone,
   Layers,
   Sparkles,
-  Volume2,
-  CheckCircle2,
   RefreshCw,
   Sliders,
   Zap,
 } from "lucide-react";
-import { SpotlightCard } from "@/components/ui/spotlight-card";
 import { sound } from "@/lib/sound";
 
 export function UICraftShowcase() {
-  const [activeTab, setActiveTab] = useState("Gestures");
-  const [toggleState, setToggleState] = useState(true);
   const [sheetDismissed, setSheetDismissed] = useState(false);
-  const [optimisticCount, setOptimisticCount] = useState(42);
-  const [isLiking, setIsLiking] = useState(false);
-
-  const handleLike = () => {
-    sound.playSuccess();
-    setIsLiking(true);
-    setOptimisticCount((prev) => prev + 1);
-    setTimeout(() => setIsLiking(false), 400);
-  };
-
-  const handleTabChange = (tab: string) => {
-    sound.playClick();
-    setActiveTab(tab);
-  };
+  const [activeCurve, setActiveCurve] = useState("spring");
+  const [toggleState, setToggleState] = useState(true);
 
   return (
-    <section id="craft" className="py-24 px-6 max-w-5xl mx-auto border-t border-[var(--border)]">
-      <div className="space-y-12">
+    <section id="lab" className="py-16 sm:py-20 px-6 sm:px-12 max-w-5xl mx-auto">
+      <div className="space-y-10">
         {/* Header */}
         <div className="space-y-2">
-          <div className="flex items-center gap-2 text-xs font-mono text-emerald-500 tracking-wider uppercase">
+          <div className="flex items-center gap-2 text-xs font-mono text-cyan-400 tracking-wider uppercase">
             <Sparkles className="size-3.5" />
-            <span>Interactive UI Lab</span>
+            <span>Interactive Motion Lab</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[var(--foreground)]">
-            UI Motion &amp; Interaction Craft
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[var(--foreground)]">
+            Android UI &amp; Gesture Sandbox
           </h2>
-          <p className="text-base text-[var(--muted)] max-w-xl">
-            Live interactive explorations in Android gesture curves, fluid spring physics, tactile audio haptics, and zero-jank interaction design.
+          <p className="text-[var(--muted)] text-sm max-w-xl leading-relaxed">
+            Live interactive simulations exploring velocity-damped spring snapping, haptic audio feedback, and perceived touch latency.
           </p>
         </div>
 
-        {/* 3 Interactive UI Showcase Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Card 1: 120Hz Gesture Spring */}
-          <SpotlightCard className="p-7 rounded-3xl flex flex-col justify-between h-full space-y-6" enableSound>
-            <div className="space-y-4">
+        {/* 3 Interactive Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {/* Card 1: Spring Dismissal Sheet */}
+          <div className="craft-card p-6 flex flex-col justify-between space-y-6">
+            <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-mono text-emerald-500 font-semibold bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
-                  Android UI Physics
+                <span className="text-[11px] font-mono text-cyan-400 font-semibold bg-cyan-500/10 border border-cyan-500/20 px-2.5 py-0.5 rounded-full">
+                  120Hz Physics
                 </span>
                 <Smartphone className="size-4 text-[var(--muted)]" />
               </div>
 
-              <h3 className="text-lg font-bold text-[var(--foreground)]">
-                Elastic Spring Dismissal
+              <h3 className="text-base font-bold text-[var(--foreground)]">
+                Elastic Spring Sheet
               </h3>
               <p className="text-xs text-[var(--muted)] leading-relaxed">
-                Drag the interactive sheet card below. Experience velocity-damped spring snapping.
+                Drag the card below downwards. Experience momentum velocity snapping.
               </p>
 
-              {/* Interactive Draggable Mini Sheet */}
-              <div className="h-32 rounded-2xl bg-[var(--secondary)] border border-[var(--border)] relative overflow-hidden flex items-center justify-center p-3">
+              {/* Draggable mini sheet */}
+              <div className="h-32 rounded-2xl bg-[var(--surface-elevated)] border border-[var(--border)] relative overflow-hidden flex items-center justify-center p-3">
                 <AnimatePresence>
                   {!sheetDismissed ? (
                     <motion.div
                       drag="y"
-                      dragConstraints={{ top: -30, bottom: 60 }}
+                      dragConstraints={{ top: -20, bottom: 50 }}
                       onDragEnd={(_, info) => {
-                        if (info.offset.y > 40) {
+                        if (info.offset.y > 35) {
                           sound.playPop();
                           setSheetDismissed(true);
                         } else {
                           sound.playClick();
                         }
                       }}
-                      className="w-full py-3 px-4 rounded-xl bg-[var(--card)] border border-[var(--border)] shadow-md cursor-grab active:cursor-grabbing flex items-center justify-between text-xs"
+                      className="w-full py-3 px-4 rounded-xl bg-[var(--surface)] border border-[var(--border-strong)] shadow-md cursor-grab active:cursor-grabbing flex items-center justify-between text-xs font-mono"
                     >
-                      <span className="font-semibold text-[var(--foreground)]">Swipe down to dismiss</span>
-                      <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+                      <span className="font-semibold text-[var(--foreground)]">Swipe down ↓</span>
+                      <span className="size-2 rounded-full bg-cyan-400 animate-pulse" />
                     </motion.div>
                   ) : (
                     <button
@@ -96,129 +79,126 @@ export function UICraftShowcase() {
                         sound.playSuccess();
                         setSheetDismissed(false);
                       }}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[var(--card)] border border-emerald-500/30 text-xs font-mono text-emerald-500 font-semibold shadow-sm"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[var(--surface)] border border-cyan-500/40 text-xs font-mono text-cyan-400 font-semibold shadow-sm cursor-pointer"
                     >
                       <RefreshCw className="size-3" />
-                      <span>Reopen Sheet</span>
+                      <span>Reset Sheet</span>
                     </button>
                   )}
                 </AnimatePresence>
               </div>
             </div>
 
-            <div className="pt-3 border-t border-[var(--border)] text-[11px] font-mono text-[var(--muted)] flex justify-between">
-              <span>Touch velocity tracking</span>
-              <span className="text-emerald-500 font-medium">120Hz Smooth</span>
+            <div className="pt-3 border-t border-[var(--border)] flex items-center justify-between text-[11px] font-mono text-[var(--muted)]">
+              <span>Android Choreographer</span>
+              <span className="text-cyan-400 font-bold">120 FPS</span>
             </div>
-          </SpotlightCard>
+          </div>
 
-          {/* Card 2: Tactile Audio Haptics */}
-          <SpotlightCard className="p-7 rounded-3xl flex flex-col justify-between h-full space-y-6" enableSound>
-            <div className="space-y-4">
+          {/* Card 2: Curve dynamics */}
+          <div className="craft-card p-6 flex flex-col justify-between space-y-6">
+            <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-mono text-teal-400 font-semibold bg-teal-500/10 border border-teal-500/20 px-2.5 py-0.5 rounded-full">
-                  Tactile Audio
+                <span className="text-[11px] font-mono text-indigo-400 font-semibold bg-indigo-500/10 border border-indigo-500/20 px-2.5 py-0.5 rounded-full">
+                  Motion Curves
                 </span>
-                <Volume2 className="size-4 text-[var(--muted)]" />
+                <Sliders className="size-4 text-[var(--muted)]" />
               </div>
 
-              <h3 className="text-lg font-bold text-[var(--foreground)]">
-                Web Audio Synthesizer
+              <h3 className="text-base font-bold text-[var(--foreground)]">
+                Damping Dynamics
               </h3>
               <p className="text-xs text-[var(--muted)] leading-relaxed">
-                Zero-asset audio feedback synthesized live with Web Audio API oscillators.
+                Compare linear easing vs critically-damped spring transitions.
               </p>
 
-              {/* Sound Test Buttons */}
-              <div className="grid grid-cols-2 gap-2 pt-2">
-                <button
-                  onClick={() => sound.playClick()}
-                  className="py-2.5 px-3 rounded-xl bg-[var(--secondary)] hover:bg-[var(--card-hover)] border border-[var(--border)] text-xs font-semibold text-[var(--foreground)] transition-all active:scale-95"
+              {/* Curve buttons */}
+              <div className="flex gap-2">
+                {["spring", "linear"].map((c) => (
+                  <button
+                    key={c}
+                    onClick={() => {
+                      sound.playPop();
+                      setActiveCurve(c);
+                    }}
+                    className={`flex-1 py-1.5 rounded-xl font-mono text-xs font-semibold capitalize border transition-all cursor-pointer ${
+                      activeCurve === c
+                        ? "bg-indigo-500/20 text-indigo-300 border-indigo-500/40"
+                        : "bg-[var(--surface-elevated)] text-[var(--muted)] border-[var(--border)]"
+                    }`}
+                  >
+                    {c}
+                  </button>
+                ))}
+              </div>
+
+              <div className="h-16 rounded-2xl bg-[var(--surface-elevated)] border border-[var(--border)] flex items-center px-4 relative overflow-hidden">
+                <motion.div
+                  key={activeCurve}
+                  initial={{ x: 0 }}
+                  animate={{ x: 180 }}
+                  transition={
+                    activeCurve === "spring"
+                      ? { type: "spring", stiffness: 300, damping: 15, repeat: Infinity, repeatType: "reverse" }
+                      : { duration: 1, ease: "linear", repeat: Infinity, repeatType: "reverse" }
+                  }
+                  className="size-8 rounded-xl bg-indigo-500 shadow-md shadow-indigo-500/30 flex items-center justify-center text-white"
                 >
-                  Click Harmonic
-                </button>
-                <button
-                  onClick={() => sound.playPop()}
-                  className="py-2.5 px-3 rounded-xl bg-[var(--secondary)] hover:bg-[var(--card-hover)] border border-[var(--border)] text-xs font-semibold text-[var(--foreground)] transition-all active:scale-95"
-                >
-                  Pop Tone
-                </button>
-                <button
-                  onClick={() => sound.playSuccess()}
-                  className="col-span-2 py-2.5 px-3 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-xs font-semibold text-emerald-500 transition-all active:scale-95 flex items-center justify-center gap-1.5"
-                >
-                  <Sparkles className="size-3.5" />
-                  <span>Success Arpeggio</span>
-                </button>
+                  <Zap className="size-4" />
+                </motion.div>
               </div>
             </div>
 
-            <div className="pt-3 border-t border-[var(--border)] text-[11px] font-mono text-[var(--muted)] flex justify-between">
-              <span>0ms Latency</span>
-              <span className="text-teal-400 font-medium">Pure Native Audio</span>
+            <div className="pt-3 border-t border-[var(--border)] flex items-center justify-between text-[11px] font-mono text-[var(--muted)]">
+              <span>Curve profile</span>
+              <span className="text-indigo-400 font-bold capitalize">{activeCurve}</span>
             </div>
-          </SpotlightCard>
+          </div>
 
-          {/* Card 3: Fluid Segmented Control & Optimistic State */}
-          <SpotlightCard className="p-7 rounded-3xl flex flex-col justify-between h-full space-y-6" enableSound>
-            <div className="space-y-4">
+          {/* Card 3: Tactile Feedback */}
+          <div className="craft-card p-6 flex flex-col justify-between space-y-6">
+            <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-mono text-cyan-400 font-semibold bg-cyan-500/10 border border-cyan-500/20 px-2.5 py-0.5 rounded-full">
-                  Micro-Animations
+                <span className="text-[11px] font-mono text-amber-400 font-semibold bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-full">
+                  Audio Haptics
                 </span>
                 <Layers className="size-4 text-[var(--muted)]" />
               </div>
 
-              <h3 className="text-lg font-bold text-[var(--foreground)]">
-                Fluid Segmented Tabs
+              <h3 className="text-base font-bold text-[var(--foreground)]">
+                Perceived State Feedback
               </h3>
               <p className="text-xs text-[var(--muted)] leading-relaxed">
-                Shared layout spring physics with instant optimistic count reconciliation.
+                Synthetic WebAudio haptic feedback for micro-interactions.
               </p>
 
-              {/* Segmented Pill Tabs */}
-              <div className="p-1 rounded-2xl bg-[var(--secondary)] border border-[var(--border)] flex items-center relative">
-                {["Gestures", "Physics", "State"].map((tab) => {
-                  const isActive = activeTab === tab;
-                  return (
-                    <button
-                      key={tab}
-                      onClick={() => handleTabChange(tab)}
-                      className={`relative flex-1 py-1.5 text-xs font-semibold transition-colors z-10 ${
-                        isActive ? "text-[var(--foreground)]" : "text-[var(--muted)] hover:text-[var(--foreground)]"
-                      }`}
-                    >
-                      {isActive && (
-                        <motion.div
-                          layoutId="active-tab-bubble"
-                          className="absolute inset-0 rounded-xl bg-[var(--card)] border border-[var(--border-highlight)] shadow-sm -z-10"
-                          transition={{ type: "spring", stiffness: 450, damping: 30 }}
-                        />
-                      )}
-                      {tab}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Optimistic Like Counter Button */}
-              <button
-                onClick={handleLike}
-                className="w-full py-2.5 px-3 rounded-xl bg-[var(--secondary)] hover:border-cyan-500/40 border border-[var(--border)] flex items-center justify-between text-xs font-mono transition-all active:scale-98"
-              >
-                <span className="text-[var(--muted)]">Optimistic Metric:</span>
-                <span className="font-bold text-cyan-400 flex items-center gap-1">
-                  <span>{optimisticCount} Stars</span>
-                  {isLiking && <span className="size-1.5 rounded-full bg-cyan-400 animate-ping" />}
+              <div className="h-28 rounded-2xl bg-[var(--surface-elevated)] border border-[var(--border)] flex flex-col items-center justify-center gap-3">
+                <button
+                  onClick={() => {
+                    sound.playClick();
+                    setToggleState(!toggleState);
+                  }}
+                  className={`w-14 h-8 rounded-full p-1 transition-colors cursor-pointer ${
+                    toggleState ? "bg-amber-400" : "bg-[var(--surface)] border border-[var(--border)]"
+                  }`}
+                >
+                  <motion.div
+                    animate={{ x: toggleState ? 24 : 0 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                    className="size-6 rounded-full bg-[#07080c] shadow-sm"
+                  />
+                </button>
+                <span className="text-[10px] font-mono text-[var(--muted)]">
+                  {toggleState ? "State: ENABLED" : "State: DISABLED"}
                 </span>
-              </button>
+              </div>
             </div>
 
-            <div className="pt-3 border-t border-[var(--border)] text-[11px] font-mono text-[var(--muted)] flex justify-between">
-              <span>Framer Motion Spring</span>
-              <span className="text-cyan-400 font-medium">LayoutId Sync</span>
+            <div className="pt-3 border-t border-[var(--border)] flex items-center justify-between text-[11px] font-mono text-[var(--muted)]">
+              <span>Feedback latency</span>
+              <span className="text-amber-400 font-bold">&lt; 5ms</span>
             </div>
-          </SpotlightCard>
+          </div>
         </div>
       </div>
     </section>

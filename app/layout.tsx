@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, DM_Mono } from "next/font/google";
+import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { SystemHeader } from "@/components/layout/system-header";
 import { SystemFooter } from "@/components/layout/system-footer";
@@ -13,30 +13,43 @@ const spaceGrotesk = Space_Grotesk({
   weight: ["300", "400", "500", "600", "700"],
 });
 
-const dmMono = DM_Mono({
+const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
   display: "swap",
-  weight: ["400", "500"],
+  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
-  title: "Naksh",
+  title: "Naksh — Independent Developer",
   description:
-    "I write code, mostly. Interested in Android UI motion, how things feel when you use them, and C++ systems. Based in Jaipur.",
-  keywords: ["Naksh", "Programmer", "Android", "UI", "C++", "Portfolio"],
-  authors: [{ name: "Naksh" }],
+    "Independent software engineer based in Jaipur. Building high-performance Android UI motion architectures, C++ systems, and real-time platforms.",
+  keywords: [
+    "Naksh",
+    "Independent Developer",
+    "Android Motion",
+    "UI Physics",
+    "C++",
+    "TypeScript",
+    "Next.js",
+    "Portfolio",
+  ],
+  authors: [{ name: "Naksh", url: "https://github.com/thenakshprajapat" }],
   creator: "Naksh",
   openGraph: {
     type: "website",
     locale: "en_US",
-    title: "Naksh",
-    description: "I write code, mostly. Based in Jaipur.",
+    url: "https://naksh.cc",
+    title: "Naksh — Independent Developer",
+    description:
+      "Independent software engineer based in Jaipur. Building high-performance Android UI motion architectures and systems.",
     siteName: "Naksh",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Naksh",
+    title: "Naksh — Independent Developer",
+    description:
+      "Independent software engineer based in Jaipur. Building high-performance Android UI motion architectures and systems.",
     creator: "@iDevNaksh",
   },
   icons: { icon: "/favicon.ico" },
@@ -48,23 +61,21 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark scroll-smooth" suppressHydrationWarning>
       <body
-        className={`${spaceGrotesk.variable} ${dmMono.variable} font-sans antialiased min-h-screen bg-[var(--background)] text-[var(--foreground)]`}
+        className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} font-sans antialiased min-h-screen bg-[var(--background)] text-[var(--foreground)] selection:bg-cyan-500/30 selection:text-white`}
       >
-        {/* Cursor — desktop only (hidden on touch, handled inside component) */}
-        <CustomCursor />
-
-        {/* Fluid background — cursor tracked, sits behind everything */}
+        {/* Dynamic ambient fluid canvas */}
         <FluidBackground />
 
-        {/* Global nav */}
+        {/* Custom cursor for fine pointer devices */}
+        <CustomCursor />
+
+        {/* Floating cyber-craft navigation */}
         <SystemHeader />
 
-        {/* Page content */}
-        <div className="relative z-10">
-          {children}
-        </div>
+        {/* Page Content */}
+        <div className="relative z-10">{children}</div>
 
-        {/* Global footer */}
+        {/* Global Footer */}
         <SystemFooter />
       </body>
     </html>
