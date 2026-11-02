@@ -1,38 +1,71 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 
+/**
+ * CustomCursor:
+ * - Tracks pointer coordinates with two Framer Motion springs:
+ *   1) A fast spring (stiffness: 480) for the center dot.
+ *   2) A softer trailing spring (stiffness: 240) for the outer ring.
+ * - Detects `[data-cursor="VIEW"]` on project cards to expand into an orange pill reading "VIEW".
+ * - Automatically disables on touch devices and when prefers-reduced-motion is enabled.
+ */
 export function CustomCursor() {
-  const cursorRef = useRef<HTMLDivElement>(null);
-  const [isHovering, setIsHovering] = useState(false);
+  const [cursorMode, setCursorMode] = useState<"default" | "link" | "view">("default");
   const [isClicking, setIsClicking] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const [isMouse, setIsMouse] = useState(false);
+  const [enabled, setEnabled] = useState(false);
 
   const mouseX = useMotionValue(-100);
   const mouseY = useMotionValue(-100);
 
-  const springConfig = { damping: 24, stiffness: 450, mass: 0.4 };
-  const cursorX = useSpring(mouseX, springConfig);
-  const cursorY = useSpring(mouseY, springConfig);
+  // Fast spring for the inner pinpoint dot
+  const dotX = useSpring(mouseX, { damping: 26, stiffness: 480, mass: 0.35 });
+  const dotY = useSpring(mouseY, { damping: 26, stiffness: 480, mass: 0.35 });
 
-  const trailX = useSpring(mouseX, { damping: 32, stiffness: 220, mass: 0.7 });
-  const trailY = useSpring(mouseY, { damping: 32, stiffness: 220, mass: 0.7 });
+  // Trailing spring for the outer ring / "VIEW" badge
+  const ringX = useSpring(mouseX, { damping: 28, stiffness: 240, mass: 0.65 });
+  const ringY = useSpring(mouseY, { damping: 28, stiffness: 240, mass: 0.65 });
 
   useEffect(() => {
-    if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
-      setIsMouse(true);
-    }
+    const checkEnvironment = () => {
+      const hasFinePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+      const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const manualReduced = document.documentElement.classList.contains("reduce-motion");
+      const isDesktopWidth = window.innerWidth >= 768;
+      setEnabled(hasFinePointer && !prefersReduced && !manualReduced && isDesktopWidth);
+    };
+
+    checkEnvironment();
+    window.addEventListener("resize", checkEnvironment, { passive: true });
+    return () => window.removeEventListener("resize", checkEnvironment);
   }, []);
 
   useEffect(() => {
-    if (!isMouse) return;
+    if (!enabled) return;
 
     const handleMove = (e: MouseEvent) => {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
       if (!isVisible) setIsVisible(true);
+
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+
+      if (target.closest('[data-cursor="VIEW"]')) {
+        setCursorMode("view");
+      } else if (
+        target.tagName === "A" ||
+        target.tagName === "BUTTON" ||
+        target.closest("a") ||
+        target.closest("button") ||
+        target.getAttribute("data-cursor-hover") === "true"
+      ) {
+        setCursorMode("link");
+      } else {
+        setCursorMode("default");
+      }
     };
 
     const handleEnter = () => setIsVisible(true);
@@ -40,23 +73,7 @@ export function CustomCursor() {
     const handleMouseDown = () => setIsClicking(true);
     const handleMouseUp = () => setIsClicking(false);
 
-    const handleHoverStart = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (
-        target.tagName === "A" ||
-        target.tagName === "BUTTON" ||
-        target.closest("a") ||
-        target.closest("button") ||
-        target.getAttribute("data-cursor-hover") === "true"
-      ) {
-        setIsHovering(true);
-      } else {
-        setIsHovering(false);
-      }
-    };
-
-    document.addEventListener("mousemove", handleMove);
-    document.addEventListener("mousemove", handleHoverStart);
+    document.addEventListener("mousemove", handleMove, { passive: true });
     document.addEventListener("mouseenter", handleEnter);
     document.addEventListener("mouseleave", handleLeave);
     document.addEventListener("mousedown", handleMouseDown);
@@ -64,59 +81,68 @@ export function CustomCursor() {
 
     return () => {
       document.removeEventListener("mousemove", handleMove);
-      document.removeEventListener("mousemove", handleHoverStart);
       document.removeEventListener("mouseenter", handleEnter);
       document.removeEventListener("mouseleave", handleLeave);
       document.removeEventListener("mousedown", handleMouseDown);
       document.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [mouseX, mouseY, isVisible, isMouse]);
+  }, [enabled, isVisible, mouseX, mouseY]);
 
-  if (!isMouse) return null;
+  if (!enabled) return null;
+
+  const isView = cursorMode === "view";
+  const isLink = cursorMode === "link";
 
   return (
     <>
-      {/* Trailing soft ring */}
+      {/* Outer trailing ring that morphs into a "VIEW" badge over project cards */}
       <motion.div
-        className="pointer-events-none fixed z-[9998] rounded-full"
+        aria-hidden="true"
+        className="pointer-events-none fixed z-[9998] rounded-full flex items-center justify-center font-mono text-[10px] font-bold tracking-[0.14em]"
         style={{
-          x: trailX,
-          y: trailY,
+          x: ringX,
+          y: ringY,
           translateX: "-50%",
           translateY: "-50%",
           opacity: isVisible ? 1 : 0,
         }}
         animate={{
-          width: isHovering ? 44 : 28,
-          height: isHovering ? 44 : 28,
-          background: isHovering
-            ? "rgba(16, 185, 129, 0.12)"
-            : "rgba(241, 245, 249, 0.05)",
-          border: isHovering
-            ? "1px solid rgba(16, 185, 129, 0.45)"
-            : "1px solid rgba(241, 245, 249, 0.15)",
+          width: isView ? 68 : isLink ? 44 : 28,
+          height: isView ? 68 : isLink ? 44 : 28,
+          backgroundColor: isView
+            ? "rgba(255, 90, 31, 0.95)"
+            : isLink
+            ? "rgba(255, 90, 31, 0.12)"
+            : "rgba(255, 90, 31, 0)",
+          border: isView
+            ? "1px solid #FF5A1F"
+            : isLink
+            ? "1px solid rgba(255, 90, 31, 0.8)"
+            : "1px solid rgba(242, 239, 233, 0.25)",
+          scale: isClicking ? 0.88 : 1,
         }}
-        transition={{ duration: 0.18 }}
-      />
+        transition={{ duration: 0.16, ease: "easeOut" }}
+      >
+        {isView && <span className="text-[#0a0a0a] select-none">VIEW</span>}
+      </motion.div>
 
-      {/* Center pinpoint */}
+      {/* Inner pinpoint dot */}
       <motion.div
-        ref={cursorRef}
+        aria-hidden="true"
         className="pointer-events-none fixed z-[9999] rounded-full"
         style={{
-          x: cursorX,
-          y: cursorY,
+          x: dotX,
+          y: dotY,
           translateX: "-50%",
           translateY: "-50%",
-          opacity: isVisible ? 1 : 0,
+          opacity: isVisible && !isView ? 1 : 0,
         }}
         animate={{
-          width: isClicking ? 5 : isHovering ? 6 : 7,
-          height: isClicking ? 5 : isHovering ? 6 : 7,
-          background: isHovering ? "#10b981" : "#f1f5f9",
-          scale: isClicking ? 0.75 : 1,
+          width: isClicking ? 4 : 6,
+          height: isClicking ? 4 : 6,
+          backgroundColor: "#FF5A1F",
         }}
-        transition={{ duration: 0.12 }}
+        transition={{ duration: 0.1 }}
       />
     </>
   );

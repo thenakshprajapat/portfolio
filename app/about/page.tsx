@@ -1,13 +1,13 @@
 import { AboutBento } from "@/components/sections/about-bento";
 
 export const metadata = {
-  title: "About — Naksh",
-  description: "A bit about me, what I work on, and where I've been.",
+  title: "About · Naksh Prajapati",
+  description: "About Naksh Prajapati, computer science student and developer in Jaipur, India.",
 };
 
 export default function AboutPage() {
   return (
-    <main className="pt-14 sm:pt-16 min-h-screen">
+    <main className="min-h-screen">
       <AboutBento />
     </main>
   );

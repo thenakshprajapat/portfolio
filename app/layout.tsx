@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { SystemHeader } from "@/components/layout/system-header";
 import { SystemFooter } from "@/components/layout/system-footer";
+import { SmoothScroll } from "@/components/layout/smooth-scroll";
 import { CustomCursor } from "@/components/ui/custom-cursor";
 import { FluidBackground } from "@/components/ui/fluid-background";
 
-const spaceGrotesk = Space_Grotesk({
+const inter = Inter({
   variable: "--font-sans",
   subsets: ["latin"],
   display: "swap",
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700", "800"],
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -21,36 +22,19 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Naksh — Independent Developer",
+  title: "Naksh Prajapati · naksh.cc",
   description:
-    "Independent software engineer based in Jaipur. Building high-performance Android UI motion architectures, C++ systems, and real-time platforms.",
-  keywords: [
-    "Naksh",
-    "Independent Developer",
-    "Android Motion",
-    "UI Physics",
-    "C++",
-    "TypeScript",
-    "Next.js",
-    "Portfolio",
-  ],
-  authors: [{ name: "Naksh", url: "https://github.com/thenakshprajapat" }],
-  creator: "Naksh",
+    "Naksh Prajapati, computer science student and developer in Jaipur, India building local-first web apps, Android tools, and Python utilities.",
+  authors: [{ name: "Naksh Prajapati", url: "https://github.com/thenakshprajapat" }],
+  creator: "Naksh Prajapati",
   openGraph: {
     type: "website",
-    locale: "en_US",
+    locale: "en_IN",
     url: "https://naksh.cc",
-    title: "Naksh — Independent Developer",
+    title: "Naksh Prajapati · naksh.cc",
     description:
-      "Independent software engineer based in Jaipur. Building high-performance Android UI motion architectures and systems.",
-    siteName: "Naksh",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Naksh — Independent Developer",
-    description:
-      "Independent software engineer based in Jaipur. Building high-performance Android UI motion architectures and systems.",
-    creator: "@iDevNaksh",
+      "Local-first web apps, Android tools, and Python utilities built in Jaipur, India.",
+    siteName: "naksh.cc",
   },
   icons: { icon: "/favicon.ico" },
 };
@@ -59,24 +43,19 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="dark scroll-smooth" suppressHydrationWarning>
+    <html lang="en" className="dark" suppressHydrationWarning>
       <body
-        className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} font-sans antialiased min-h-screen bg-[var(--background)] text-[var(--foreground)] selection:bg-cyan-500/30 selection:text-white`}
+        className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col relative`}
       >
-        {/* Dynamic ambient fluid canvas */}
-        <FluidBackground />
-
-        {/* Custom cursor for fine pointer devices */}
-        <CustomCursor />
-
-        {/* Floating cyber-craft navigation */}
-        <SystemHeader />
-
-        {/* Page Content */}
-        <div className="relative z-10">{children}</div>
-
-        {/* Global Footer */}
-        <SystemFooter />
+        <SmoothScroll>
+          <FluidBackground />
+          <CustomCursor />
+          <SystemHeader />
+          <div className="relative z-10 flex-1">{children}</div>
+          <div className="relative z-10">
+            <SystemFooter />
+          </div>
+        </SmoothScroll>
       </body>
     </html>
   );

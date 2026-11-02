@@ -3,50 +3,67 @@
 import React from "react";
 
 interface MarqueeTickerProps {
-  items: { label: string; icon?: string }[];
+  items?: { label: string }[];
   speed?: number;
   direction?: "left" | "right";
   className?: string;
-  itemClassName?: string;
-  separator?: string;
 }
 
+const DEFAULT_SKILLS = [
+  { label: "Next.js 16" },
+  { label: "React 19" },
+  { label: "TypeScript" },
+  { label: "Python" },
+  { label: "Capacitor 8" },
+  { label: "Android" },
+  { label: "Tailwind CSS" },
+  { label: "IndexedDB" },
+  { label: "Firestore" },
+  { label: "Tesseract OCR" },
+  { label: "OpenCV" },
+];
+
 export function MarqueeTicker({
-  items,
-  speed = 35,
+  items = DEFAULT_SKILLS,
+  speed = 34,
   direction = "left",
   className = "",
-  itemClassName = "",
-  separator = "✦",
 }: MarqueeTickerProps) {
-  // Double the items for seamless infinite loop
   const doubled = [...items, ...items];
   const duration = `${speed}s`;
 
   return (
     <div
-      className={`relative overflow-hidden flex items-center ${className}`}
-      style={{ maskImage: "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)" }}
+      aria-label="Technologies used"
+      className={`max-w-6xl mx-auto px-4 sm:px-8 my-2 ${className}`}
     >
       <div
-        className="flex items-center gap-0 whitespace-nowrap"
+        className="relative overflow-hidden rounded-xl matte-box py-2.5 flex items-center select-none"
         style={{
-          animation: `marquee ${duration} linear infinite`,
-          animationDirection: direction === "right" ? "reverse" : "normal",
-          willChange: "transform",
+          maskImage:
+            "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
         }}
       >
-        {doubled.map((item, i) => (
-          <span key={i} className="flex items-center gap-6 px-4">
-            {item.icon && (
-              <span className="text-base">{item.icon}</span>
-            )}
-            <span className={`text-sm font-medium tracking-wide ${itemClassName}`}>
-              {item.label}
+        <div
+          className="flex items-center whitespace-nowrap"
+          style={{
+            animation: `marquee ${duration} linear infinite`,
+            animationDirection: direction === "right" ? "reverse" : "normal",
+            willChange: "transform",
+          }}
+        >
+          {doubled.map((item, i) => (
+            <span key={i} className="inline-flex items-center gap-4 px-3">
+              <span className="font-mono text-xs font-normal tracking-wide text-[var(--text-muted)] hover:text-[var(--text)] transition-colors">
+                {item.label}
+              </span>
+              <span
+                className="inline-block size-1 rounded-full bg-[var(--accent)]/70"
+                aria-hidden="true"
+              />
             </span>
-            <span className="text-[var(--accent)] text-xs opacity-60">{separator}</span>
-          </span>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -1,54 +1,33 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
+import Link from "next/link";
 import { motion } from "framer-motion";
-import {
-  Github,
-  Twitter,
-  Linkedin,
-  Mail,
-  ArrowDown,
-  ArrowUpRight,
-  MapPin,
-  Sparkles,
-  Smartphone,
-  Terminal,
-  Layers,
-} from "lucide-react";
+import { ArrowRight, ArrowUpRight, Check, Copy } from "lucide-react";
+import { MagneticButton } from "@/components/ui/magnetic-button";
 import { sound } from "@/lib/sound";
 
-const SOCIALS = [
-  { icon: Github, href: "https://github.com/thenakshprajapat", label: "GitHub" },
-  { icon: Twitter, href: "https://twitter.com/idevnaksh", label: "X / Twitter" },
-  { icon: Linkedin, href: "https://linkedin.com/in/thenakshprajapat", label: "LinkedIn" },
-  { icon: Mail, href: "mailto:hey@naksh.cc", label: "Email" },
-];
+const IndiaGlobe3D = dynamic(
+  () => import("@/components/ui/india-globe-3d").then((m) => m.IndiaGlobe3D),
+  { ssr: false }
+);
 
-const CRAFT_PILLARS = [
-  {
-    icon: Smartphone,
-    title: "Android UI & 120Hz Motion",
-    desc: "Physics-based spring curves, choreographed gestures, and perceived touch latency reduction.",
-  },
-  {
-    icon: Terminal,
-    title: "C++ & Systems Foundations",
-    desc: "Cache-conscious memory layout, performance architectures, and algorithmic speed.",
-  },
-  {
-    icon: Layers,
-    title: "Distributed Realtime Web",
-    desc: "Optimistic local state, real-time snapshot sync, and zero-jank frontend interactions.",
-  },
+const HERO_LINKS = [
+  { label: "GitHub", handle: "@thenakshprajapat", href: "https://github.com/thenakshprajapat" },
+  { label: "X", handle: "@idevnaksh", href: "https://x.com/idevnaksh" },
+  { label: "LinkedIn", handle: "thenakshprajapat", href: "https://linkedin.com/in/thenakshprajapat" },
+  { label: "Email", handle: "hey@naksh.cc", href: "mailto:hey@naksh.cc" },
 ];
 
 export function ManifestoHero() {
-  const [time, setTime] = useState("");
+  const [jaipurTime, setJaipurTime] = useState("");
+  const [copiedEmail, setCopiedEmail] = useState(false);
 
   useEffect(() => {
-    const tick = () =>
-      setTime(
-        new Intl.DateTimeFormat("en-US", {
+    const tick = () => {
+      setJaipurTime(
+        new Intl.DateTimeFormat("en-IN", {
           timeZone: "Asia/Kolkata",
           hour: "2-digit",
           minute: "2-digit",
@@ -56,142 +35,149 @@ export function ManifestoHero() {
           hour12: true,
         }).format(new Date())
       );
+    };
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
   }, []);
 
-  const scrollTo = (id: string) => {
+  const copyEmail = async () => {
     sound.playPop();
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth" });
+    try {
+      await navigator.clipboard.writeText("hey@naksh.cc");
+      setCopiedEmail(true);
+      setTimeout(() => setCopiedEmail(false), 2000);
+    } catch {}
   };
 
   return (
-    <section id="hero" className="relative pt-24 sm:pt-32 pb-12 sm:pb-16 px-6 sm:px-10 max-w-4xl mx-auto">
-      {/* Background Soft Glow */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[400px] rounded-full bg-emerald-500/5 blur-[120px] pointer-events-none -z-10" />
-
-      <div className="space-y-8 sm:space-y-10">
-        {/* Top Status Pill */}
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="flex flex-wrap items-center gap-2.5"
-        >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--surface-elevated)] border border-[var(--border)] text-xs font-mono text-[var(--foreground)]">
-            <span className="relative flex size-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex rounded-full size-2 bg-emerald-400" />
+    <section
+      id="top"
+      className="pt-8 sm:pt-14 pb-12 sm:pb-16 px-4 sm:px-8 max-w-6xl mx-auto"
+    >
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        {/* Left 7 columns: Refined typography and rounded controls */}
+        <div className="lg:col-span-7 space-y-5">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-xl matte-box font-mono text-xs text-[var(--text-muted)]"
+          >
+            <span
+              className="inline-block size-1.5 rounded-full bg-[var(--accent)]"
+              aria-hidden="true"
+            />
+            <span>Naksh Prajapati · Jaipur, India</span>
+            <span className="text-[var(--text-dim)]">·</span>
+            <span className="text-[var(--accent)] tabular-nums">
+              {jaipurTime || "IST"}
             </span>
-            <MapPin className="size-3 text-emerald-500" />
-            <span>Jaipur, India</span>
-            <span className="text-[var(--muted-foreground)]">•</span>
-            <span className="tabular-nums text-emerald-600 dark:text-emerald-400">{time || "IST"}</span>
-          </div>
+          </motion.div>
 
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--surface)] border border-[var(--border)] text-xs font-mono text-[var(--muted)]">
-            <Sparkles className="size-3 text-emerald-500" />
-            <span>Available for projects</span>
-          </div>
-        </motion.div>
-
-        {/* Main Headline (Refined, Less Bold, Smaller) */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.5 }}
-          className="space-y-3"
-        >
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-[var(--foreground)] leading-[1.12]">
-            Hey, I&apos;m <span className="gradient-green-text">Naksh</span>.
-          </h1>
-          <p className="text-lg sm:text-xl md:text-2xl text-[var(--muted)] font-normal leading-snug">
-            Software engineer building applications with obsession over{" "}
-            <span className="text-[var(--foreground)] font-medium underline decoration-emerald-500/30 underline-offset-4">
-              Android UI motion mechanics
+          <motion.h1
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.06 }}
+            className="text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight text-[var(--text)] leading-[1.2]"
+          >
+            I build local-first web apps,{" "}
+            <span className="text-[var(--accent)] font-normal italic">
+              Android tools
             </span>
-            , fluid gesture response, and C++ systems.
-          </p>
-        </motion.div>
+            , and Python utilities.
+          </motion.h1>
 
-        {/* Clean Concise About */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-          className="space-y-3 text-sm sm:text-base text-[var(--muted)] leading-relaxed max-w-2xl"
-        >
-          <p>
-            I&apos;m an independent developer based in Jaipur. I build standalone applications with attention to zero-jank frame rendering, distributed optimistic state, and tactile physics.
-          </p>
-        </motion.div>
+          <motion.p
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.12 }}
+            className="text-sm sm:text-base text-[var(--text-muted)] max-w-xl leading-relaxed"
+          >
+            I&apos;m a computer science student and developer in Jaipur writing
+            software for problems I run into myself, from Indian weather
+            dashboards and paise-accurate expense ledgers to OCR exam analyzers.
+          </motion.p>
 
-        {/* Social Links & Primary CTAs */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-          className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t border-[var(--border)]"
-        >
-          {/* Action buttons */}
-          <div className="flex flex-wrap items-center gap-2.5">
-            <button
-              onClick={() => scrollTo("work")}
-              className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-emerald-500 text-white font-mono text-xs font-medium uppercase tracking-wider hover:bg-emerald-600 transition-all shadow-md shadow-emerald-500/15 cursor-pointer"
-            >
-              <span>Explore Builds</span>
-              <ArrowDown className="size-3" />
-            </button>
-
-            <button
-              onClick={() => scrollTo("contact")}
-              className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full border border-[var(--border-strong)] bg-[var(--surface)] text-[var(--foreground)] font-mono text-xs font-medium uppercase tracking-wider hover:border-emerald-500 hover:text-emerald-500 transition-all cursor-pointer"
-            >
-              <span>Get in Touch</span>
-              <ArrowUpRight className="size-3" />
-            </button>
-          </div>
-
-          {/* Direct Social Links */}
-          <div className="flex items-center gap-1.5">
-            {SOCIALS.map(({ icon: Icon, href, label }) => (
-              <a
-                key={label}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.18 }}
+            className="flex flex-wrap items-center gap-3 pt-1"
+          >
+            <MagneticButton strength={0.18}>
+              <Link
+                href="/work"
                 onClick={() => sound.playPop()}
-                aria-label={label}
-                title={label}
-                className="p-2.5 rounded-full border border-[var(--border)] bg-[var(--surface)] text-[var(--muted)] hover:text-emerald-500 hover:border-emerald-500/40 transition-all cursor-pointer"
+                className="group inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--accent)] text-[var(--bg)] font-mono text-xs font-medium hover:bg-[var(--accent-hover)] transition-colors"
               >
-                <Icon className="size-3.5" />
+                <span>View projects</span>
+                <ArrowRight
+                  className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5"
+                  aria-hidden="true"
+                />
+              </Link>
+            </MagneticButton>
+
+            <MagneticButton
+              as="button"
+              type="button"
+              strength={0.18}
+              onClick={copyEmail}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl matte-box text-[var(--text)] font-mono text-xs hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors cursor-pointer"
+            >
+              {copiedEmail ? (
+                <>
+                  <Check className="size-3.5 text-[var(--accent)]" aria-hidden="true" />
+                  <span className="text-[var(--accent)]">Copied hey@naksh.cc</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="size-3.5 text-[var(--accent)]" aria-hidden="true" />
+                  <span>hey@naksh.cc</span>
+                </>
+              )}
+            </MagneticButton>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.24 }}
+            className="pt-4 grid grid-cols-2 sm:grid-cols-4 gap-2.5 font-mono text-xs"
+          >
+            {HERO_LINKS.map((item) => (
+              <a
+                key={item.label}
+                href={item.href}
+                target={item.href.startsWith("http") ? "_blank" : undefined}
+                rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                onClick={() => sound.playClick()}
+                className="group p-2.5 rounded-xl matte-box hover:border-[var(--accent)] transition-colors flex flex-col justify-between gap-1"
+              >
+                <span className="text-[10px] text-[var(--text-dim)] flex items-center justify-between">
+                  <span>{item.label}</span>
+                  <ArrowUpRight
+                    className="size-3 text-[var(--accent)] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                    aria-hidden="true"
+                  />
+                </span>
+                <span className="text-[var(--text)] group-hover:text-[var(--accent)] transition-colors truncate">
+                  {item.handle}
+                </span>
               </a>
             ))}
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
 
-        {/* 3 Core Craft Focus Pillars */}
+        {/* Right 5 columns: Unenclosed 3D figure only */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
-          className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-4"
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.55, delay: 0.1 }}
+          className="lg:col-span-5"
         >
-          {CRAFT_PILLARS.map(({ icon: Icon, title, desc }) => (
-            <div
-              key={title}
-              className="rounded-2xl p-5 bg-[var(--card)] border border-[var(--border)] hover:border-emerald-500/30 transition-all space-y-2.5 shadow-sm"
-            >
-              <div className="size-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500">
-                <Icon className="size-3.5" />
-              </div>
-              <h3 className="text-sm font-semibold text-[var(--foreground)]">{title}</h3>
-              <p className="text-xs text-[var(--muted)] leading-relaxed">{desc}</p>
-            </div>
-          ))}
+          <IndiaGlobe3D />
         </motion.div>
       </div>
     </section>

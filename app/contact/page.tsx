@@ -1,13 +1,13 @@
 import { TransmissionTerminal } from "@/components/sections/transmission-terminal";
 
 export const metadata = {
-  title: "Contact — Naksh",
-  description: "Say hi. I try to reply to everything.",
+  title: "Contact · Naksh Prajapati",
+  description: "Reach Naksh Prajapati by email at hey@naksh.cc.",
 };
 
 export default function ContactPage() {
   return (
-    <main className="pt-14 sm:pt-16 min-h-screen">
+    <main className="min-h-screen">
       <TransmissionTerminal />
     </main>
   );

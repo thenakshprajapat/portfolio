@@ -1,410 +1,251 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
-import { motion } from "framer-motion";
-import {
-  Github,
-  ChevronLeft,
-  ChevronRight,
-  Layers,
-  Pause,
-  Plus,
-  ArrowUpRight,
-} from "lucide-react";
+import React, { useRef, useState } from "react";
+import Link from "next/link";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { sound } from "@/lib/sound";
 
-interface Project {
-  id: string;
-  number: string;
-  category: string;
-  year: string;
-  title: string;
-  description: string;
-  tags: string[];
-  github: string;
-  live: string;
-  liveLabel: string;
-  accentColor: string;
-  borderColor: string;
-  bgGlow: string;
-  interactiveType?: "sync" | "nlp" | "hub";
+interface TiltCardProps {
+  children: React.ReactNode;
+  className?: string;
 }
 
-const PROJECTS: Project[] = [
-  {
-    id: "contacts-sync",
-    number: "01",
-    category: "Realtime Systems & UI",
-    year: "2026",
-    title: "Contacts Realtime Sync Engine",
-    description:
-      "A distributed, zero-jank contact manager architected on Firestore snapshot listeners. Features optimistic local state writes, automatic offline cache reconciliation, and sub-60ms mutation latency.",
-    tags: ["React 19", "Firebase Firestore", "TypeScript", "Tailwind CSS"],
-    github: "https://github.com/thenakshprajapat/contacts-firebase",
-    live: "https://contacts-firebase-app.vercel.app/",
-    liveLabel: "Open Live App",
-    accentColor: "text-emerald-500 dark:text-emerald-400",
-    borderColor: "border-emerald-500/30",
-    bgGlow: "from-emerald-500/10 to-transparent",
-    interactiveType: "sync",
-  },
-  {
-    id: "paper-analyzer",
-    number: "02",
-    category: "Python & NLP Intelligence",
-    year: "2025",
-    title: "Paper Analyzer — Pattern AI",
-    description:
-      "Automated natural language processing pipeline that parses historical examination papers, performs regex pattern extraction, clusters recurrent conceptual topics, and charts predictive revision heatmaps.",
-    tags: ["Python", "NLP", "Topic Modeling", "Streamlit", "Data Science"],
-    github: "https://github.com/thenakshprajapat/paper-analyzer",
-    live: "https://paper-analyzer.streamlit.app/",
-    liveLabel: "Launch Analyzer",
-    accentColor: "text-teal-500 dark:text-teal-400",
-    borderColor: "border-teal-500/30",
-    bgGlow: "from-teal-500/10 to-transparent",
-    interactiveType: "nlp",
-  },
-  {
-    id: "cs-hub",
-    number: "03",
-    category: "Systems & Open Source",
-    year: "2025",
-    title: "CS Resources Hub — Zero-Noise",
-    description:
-      "Distraction-free educational index mapping core computer science foundations — Operating Systems, Distributed Systems, Low-Level C++ Memory, and Web Architecture — with zero ads or commercial clutter.",
-    tags: ["Next.js", "TypeScript", "Tailwind CSS", "Open Source"],
-    github: "https://github.com/thenakshprajapat/edtech-cs",
-    live: "https://thenakshprajapat.github.io/edtech-cs/",
-    liveLabel: "Explore Hub",
-    accentColor: "text-emerald-600 dark:text-emerald-300",
-    borderColor: "border-emerald-500/30",
-    bgGlow: "from-emerald-500/10 to-transparent",
-    interactiveType: "hub",
-  },
-];
+function TiltCard({ children, className = "" }: TiltCardProps) {
+  const cardRef = useRef<HTMLElement | null>(null);
+  const [glare, setGlare] = useState({ x: 50, y: 50, opacity: 0 });
 
-export function GlidingWorkShowcase() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
 
-  // Mini interactive state for contact sync project
-  const [contacts, setContacts] = useState([
-    { id: 1, name: "Sarah Lin", role: "Frontend Lead", sync: "Synced" },
-    { id: 2, name: "David Chen", role: "Distributed Systems", sync: "Synced" },
-  ]);
-  const [addingContact, setAddingContact] = useState(false);
+  const springX = useSpring(mouseX, { stiffness: 260, damping: 24 });
+  const springY = useSpring(mouseY, { stiffness: 260, damping: 24 });
 
-  const total = PROJECTS.length;
+  const rotateX = useTransform(springY, [-0.5, 0.5], [3.5, -3.5]);
+  const rotateY = useTransform(springX, [-0.5, 0.5], [-3.5, 3.5]);
 
-  const nextSlide = useCallback(() => {
-    sound.playPop();
-    setActiveIndex((prev) => (prev + 1) % total);
-    setProgress(0);
-  }, [total]);
-
-  const prevSlide = useCallback(() => {
-    sound.playPop();
-    setActiveIndex((prev) => (prev - 1 + total) % total);
-    setProgress(0);
-  }, [total]);
-
-  const goToSlide = (index: number) => {
-    if (index === activeIndex) return;
-    sound.playClick();
-    setActiveIndex(index);
-    setProgress(0);
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    const el = cardRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const nx = (e.clientX - rect.left) / rect.width - 0.5;
+    const ny = (e.clientY - rect.top) / rect.height - 0.5;
+    mouseX.set(nx);
+    mouseY.set(ny);
+    setGlare({
+      x: ((e.clientX - rect.left) / rect.width) * 100,
+      y: ((e.clientY - rect.top) / rect.height) * 100,
+      opacity: 0.1,
+    });
   };
 
-  // 5-second smooth automatic glider with progress bar
-  useEffect(() => {
-    if (isPaused) return;
-
-    const intervalTime = 50;
-    const totalTime = 5000;
-    const step = (intervalTime / totalTime) * 100;
-
-    const timer = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          nextSlide();
-          return 0;
-        }
-        return prev + step;
-      });
-    }, intervalTime);
-
-    return () => clearInterval(timer);
-  }, [isPaused, nextSlide]);
-
-  const addSimulatedContact = () => {
-    if (addingContact) return;
-    sound.playClick();
-    setAddingContact(true);
-    const newId = Date.now();
-    setContacts((p) => [{ id: newId, name: "Elena Rostova", role: "Kernel Dev", sync: "Syncing…" }, ...p]);
-    setTimeout(() => {
-      setContacts((p) => p.map((c) => (c.id === newId ? { ...c, sync: "Done (<50ms)" } : c)));
-      setAddingContact(false);
-      sound.playSuccess();
-    }, 550);
+  const handleMouseLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+    setGlare((g) => ({ ...g, opacity: 0 }));
   };
 
   return (
-    <section id="work" className="py-16 sm:py-24 px-4 sm:px-8 max-w-5xl mx-auto relative select-none">
-      {/* Section Title */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 sm:mb-14">
-        <div className="space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-mono text-emerald-500 uppercase tracking-wider">
-            <Layers className="size-3" />
-            <span>Featured Engineering</span>
-          </div>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-[var(--foreground)]">
-            Selected <span className="gradient-green-text">Builds</span>
-          </h2>
-          <p className="text-xs sm:text-sm text-[var(--muted)] max-w-md leading-relaxed">
-            Real production architectures, distributed realtime engines, and systems built solo.
-          </p>
-        </div>
-
-        {/* Carousel Controls */}
-        <div className="flex items-center gap-2.5">
-          <div
-            onClick={() => setIsPaused(!isPaused)}
-            className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--surface-elevated)] border border-[var(--border)] text-xs font-mono text-[var(--muted)] hover:text-[var(--foreground)] transition-colors cursor-pointer"
-            title={isPaused ? "Glider Paused - Click to resume" : "Auto-gliding every 5s - Click to pause"}
-          >
-            <div className="relative size-2.5 flex items-center justify-center">
-              {isPaused ? (
-                <Pause className="size-2.5 text-amber-500" />
-              ) : (
-                <span className="size-1.5 rounded-full bg-emerald-500 animate-ping" />
-              )}
-            </div>
-            <span>5s Glider {isPaused ? "(Paused)" : ""}</span>
-          </div>
-
-          <div className="flex items-center gap-1">
-            <button
-              onClick={prevSlide}
-              aria-label="Previous project"
-              className="p-2 rounded-full bg-[var(--surface-elevated)] border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-emerald-500/40 transition-all cursor-pointer"
-            >
-              <ChevronLeft className="size-3.5" />
-            </button>
-            <button
-              onClick={nextSlide}
-              aria-label="Next project"
-              className="p-2 rounded-full bg-[var(--surface-elevated)] border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-emerald-500/40 transition-all cursor-pointer"
-            >
-              <ChevronRight className="size-3.5" />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* 3D Gliding Carousel Container */}
+    <motion.article
+      ref={cardRef}
+      data-cursor="VIEW"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        rotateX,
+        rotateY,
+        transformPerspective: 1000,
+      }}
+      className={`group relative rounded-2xl matte-box hover:border-[var(--accent)]/60 transition-colors overflow-hidden ${className}`}
+    >
       <div
-        className="relative min-h-[480px] sm:min-h-[450px] flex items-center justify-center glider-container"
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
-      >
-        <div className="relative w-full max-w-3xl flex items-center justify-center">
-          {PROJECTS.map((project, index) => {
-            const diff = (index - activeIndex + total) % total;
-            const isCenter = diff === 0;
-            const isLeft = diff === total - 1 || (activeIndex === 0 && index === total - 1);
-            const isRight = diff === 1 || (activeIndex === total - 1 && index === 0);
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-20 transition-opacity duration-200"
+        style={{
+          opacity: glare.opacity,
+          background: `radial-gradient(circle 220px at ${glare.x}% ${glare.y}%, rgba(255, 90, 31, 0.18), transparent 75%)`,
+        }}
+      />
+      <div className="relative z-10 h-full flex flex-col justify-between p-5 sm:p-6">
+        {children}
+      </div>
+    </motion.article>
+  );
+}
 
-            let transformStyle = "";
-            let zIndex = 10;
-            let opacity = 0;
-            let filter = "blur(8px)";
-            let pointerEvents: "auto" | "none" = "none";
+const PROJECTS = [
+  {
+    num: "01",
+    title: "Mausam (मौसम)",
+    subtitle: "Weather platform for India",
+    description:
+      "Weather platform with 8 persona dashboards (farmers, commuters, parents, athletes, coastal communities, travelers, events, and health), English and Hindi voice warnings, Doppler radar, and an Android APK build.",
+    note: "34°C · Dry NW wind · Ideal window for mustard harvest",
+    tags: ["Next.js 16", "React 19", "TypeScript", "Tailwind v4", "Capacitor 8", "PWA"],
+    live: "https://mausam-homepage.vercel.app",
+    repo: "https://github.com/thenakshprajapat/mausam_homepage",
+  },
+  {
+    num: "02",
+    title: "Money Tracker",
+    subtitle: "Offline-first personal finance",
+    description:
+      "Personal expense ledger built around Indian currency formatting (₹1,00,000.00). Stores amounts as integer paise to avoid floating-point errors, links self-transfers as one record, and locks old transactions with Firestore rules.",
+    note: "Integer paise storage · Firestore rule locks · Unit tested",
+    tags: ["React 18", "TypeScript", "Vite", "Firebase Firestore", "IndexedDB"],
+    live: "https://moneytracker-olive.vercel.app",
+    repo: "https://github.com/thenakshprajapat/money_tracker",
+  },
+  {
+    num: "03",
+    title: "Studio / Today",
+    subtitle: "Habit tracker & task manager",
+    description:
+      "Browser-based habit tracker and daily task manager. Computes streaks directly from activity logs rather than stored counters, with a 90-day activity grid, keyboard navigation, and JSON export and import.",
+    note: "90-day activity grid · Keyboard-first · Vitest streak tests",
+    tags: ["React", "TypeScript", "Vite", "Tailwind v4", "Dexie.js (IndexedDB)"],
+    live: "https://habitstudio.vercel.app",
+    repo: "https://github.com/thenakshprajapat/habitsAndTasks_manager",
+  },
+  {
+    num: "04",
+    title: "Paper Analyzer",
+    subtitle: "Exam question pattern analyzer",
+    description:
+      "Scans past question papers to find chapters, topics, and recurring patterns. Uses Tesseract OCR for image-heavy pages and physics diagrams, batch PDF processing, the Google Gemini API, and Plotly charts.",
+    note: "Diagram OCR · Batch PDF processing · Interactive charts",
+    tags: ["Python", "Streamlit", "Flask", "Gemini API", "Tesseract OCR", "Plotly"],
+    live: "https://paper-analyzer.streamlit.app",
+    repo: "https://github.com/thenakshprajapat/paper-analyzer",
+  },
+  {
+    num: "05",
+    title: "OmniVision AI",
+    subtitle: "Object detection prototype",
+    description:
+      "Live webcam object detection running in both a native desktop window and a web dashboard, backed by a REST and WebSocket API and a CLI for images and video.",
+    note: "Desktop & web dashboard · REST + WebSocket API · CLI",
+    tags: ["YOLOv8 Nano", "FastAPI", "WebSockets", "OpenCV", "Python"],
+    live: undefined,
+    repo: "https://github.com/thenakshprajapat/yolo_model_test",
+  },
+  {
+    num: "06",
+    title: "Zariya",
+    subtitle: "E-commerce storefront",
+    description:
+      "Client-side e-commerce storefront built with React, TypeScript, and Vite with responsive product browsing and cart management.",
+    note: "Fast client-side catalog and storefront UI",
+    tags: ["React", "TypeScript", "Vite"],
+    live: "https://zariya-phi.vercel.app",
+    repo: "https://github.com/thenakshprajapat/zariya_ecommerce",
+  },
+];
 
-            if (isCenter) {
-              transformStyle = "translateX(0%) scale(1)";
-              zIndex = 30;
-              opacity = 1;
-              filter = "blur(0px)";
-              pointerEvents = "auto";
-            } else if (isLeft) {
-              transformStyle = "translateX(-24%) scale(0.88) rotateY(5deg)";
-              zIndex = 20;
-              opacity = 0.35;
-              filter = "blur(5px)";
-              pointerEvents = "auto";
-            } else if (isRight) {
-              transformStyle = "translateX(24%) scale(0.88) rotateY(-5deg)";
-              zIndex = 20;
-              opacity = 0.35;
-              filter = "blur(5px)";
-              pointerEvents = "auto";
-            }
+interface GlidingWorkShowcaseProps {
+  limit?: number;
+}
 
-            return (
-              <motion.div
-                key={project.id}
-                onClick={() => !isCenter && goToSlide(index)}
-                style={{
-                  transform: transformStyle,
-                  zIndex,
-                  opacity,
-                  filter,
-                  pointerEvents,
-                }}
-                className={`absolute inset-x-0 mx-auto max-w-2xl rounded-3xl p-6 sm:p-8 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] bg-[var(--card)] border ${
-                  isCenter ? project.borderColor : "border-[var(--border)]"
-                } shadow-xl overflow-hidden`}
-              >
-                {/* Background Glow */}
-                <div
-                  className={`absolute -top-20 -right-20 size-60 rounded-full bg-gradient-to-br ${project.bgGlow} blur-3xl pointer-events-none`}
-                />
+export function GlidingWorkShowcase({ limit }: GlidingWorkShowcaseProps) {
+  const displayed = limit ? PROJECTS.slice(0, limit) : PROJECTS;
+  const isPreview = Boolean(limit && limit < PROJECTS.length);
 
-                <div className="relative z-10 space-y-5">
-                  {/* Top Bar */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--border)] pb-4">
-                    <div className="flex items-center gap-2.5">
-                      <span className={`font-mono text-2xl font-semibold ${project.accentColor}`}>
-                        {project.number}
-                      </span>
-                      <div className="h-3.5 w-px bg-[var(--border)]" />
-                      <span className="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-[var(--surface-elevated)] border border-[var(--border)] text-[var(--foreground)]">
-                        {project.category}
-                      </span>
-                      <span className="text-xs font-mono text-[var(--muted)]">{project.year}</span>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <a
-                        href={project.github}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          sound.playPop();
-                        }}
-                        className="p-2 rounded-full bg-[var(--surface-elevated)] border border-[var(--border)] hover:border-emerald-500/40 text-[var(--muted)] hover:text-emerald-500 transition-colors"
-                        title="View Source on GitHub"
-                      >
-                        <Github className="size-3.5" />
-                      </a>
-                      <a
-                        href={project.live}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          sound.playPop();
-                        }}
-                        className="inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-emerald-500 text-white font-mono text-[11px] font-medium uppercase tracking-wider hover:bg-emerald-600 transition-all shadow-sm"
-                      >
-                        <span>{project.liveLabel}</span>
-                        <ArrowUpRight className="size-3" />
-                      </a>
-                    </div>
-                  </div>
-
-                  {/* Project Title & Description */}
-                  <div className="space-y-2">
-                    <h3 className="text-xl sm:text-2xl font-semibold tracking-tight text-[var(--foreground)]">
-                      {project.title}
-                    </h3>
-                    <p className="text-xs sm:text-sm text-[var(--muted)] leading-relaxed max-w-xl">
-                      {project.description}
-                    </p>
-                  </div>
-
-                  {/* Interactive Simulation */}
-                  {project.interactiveType === "sync" && (
-                    <div className="rounded-2xl bg-[var(--surface-elevated)] border border-[var(--border)] p-3.5 space-y-2.5">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1.5 text-xs font-mono text-emerald-500 font-medium">
-                          <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                          <span>Live Optimistic Sync Engine</span>
-                        </div>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            addSimulatedContact();
-                          }}
-                          disabled={addingContact}
-                          className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-[var(--surface)] border border-emerald-500/30 hover:border-emerald-500 text-[11px] font-mono text-emerald-500 font-medium transition-all disabled:opacity-50 cursor-pointer"
-                        >
-                          <Plus className="size-3" />
-                          <span>Simulate Mutation</span>
-                        </button>
-                      </div>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        {contacts.slice(0, 2).map((c) => (
-                          <div
-                            key={c.id}
-                            className="flex items-center justify-between p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--border)]"
-                          >
-                            <div>
-                              <p className="text-xs font-medium text-[var(--foreground)]">{c.name}</p>
-                              <p className="text-[10px] font-mono text-[var(--muted)]">{c.role}</p>
-                            </div>
-                            <span
-                              className={`text-[9px] font-mono px-2 py-0.5 rounded-full border ${
-                                c.sync.includes("Sync")
-                                  ? "bg-amber-500/10 text-amber-500 border-amber-500/30 animate-pulse"
-                                  : "bg-emerald-500/10 text-emerald-500 border-emerald-500/30"
-                              }`}
-                            >
-                              {c.sync}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Tech Stack Badges */}
-                  <div className="flex flex-wrap gap-1.5 pt-1 border-t border-[var(--border)]">
-                    {project.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="px-2.5 py-0.5 rounded-full bg-[var(--surface-elevated)] border border-[var(--border)] text-[11px] font-mono text-[var(--muted)]"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-            );
-          })}
+  return (
+    <section
+      id="work"
+      aria-labelledby="work-heading"
+      className="py-14 sm:py-20 px-4 sm:px-8 max-w-6xl mx-auto"
+    >
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+        <div className="space-y-1">
+          <span className="mono-label text-[var(--accent)]">Work</span>
+          <h2
+            id="work-heading"
+            className="text-xl sm:text-2xl font-semibold tracking-tight text-[var(--text)]"
+          >
+            {isPreview ? "Selected projects" : "All projects"}
+          </h2>
         </div>
+
+        {isPreview && (
+          <Link
+            href="/work"
+            onClick={() => sound.playClick()}
+            className="group inline-flex items-center gap-1.5 font-mono text-xs text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors"
+          >
+            <span>See all 6 projects</span>
+            <ArrowRight
+              className="size-3.5 transition-transform group-hover:translate-x-0.5"
+              aria-hidden="true"
+            />
+          </Link>
+        )}
       </div>
 
-      {/* Progress Dots & Timeline Bar */}
-      <div className="flex flex-col items-center gap-2.5 mt-8 sm:mt-10">
-        <div className="flex items-center gap-1.5">
-          {PROJECTS.map((p, i) => (
-            <button
-              key={p.id}
-              onClick={() => goToSlide(i)}
-              aria-label={`Go to project ${i + 1}`}
-              className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-                i === activeIndex
-                  ? "w-6 bg-emerald-500 shadow-sm shadow-emerald-500/40"
-                  : "w-1.5 bg-[var(--border-strong)] hover:bg-[var(--muted)]"
-              }`}
-            />
-          ))}
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {displayed.map((proj) => (
+          <TiltCard key={proj.num}>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between font-mono text-xs">
+                <span className="text-[var(--accent)] font-medium">
+                  {proj.num}
+                </span>
+                <div className="flex items-center gap-3">
+                  {proj.live && (
+                    <a
+                      href={proj.live}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => sound.playPop()}
+                      className="text-[var(--accent)] hover:underline inline-flex items-center gap-1"
+                    >
+                      <span>Live</span>
+                      <ArrowUpRight className="size-3" aria-hidden="true" />
+                    </a>
+                  )}
+                  <a
+                    href={proj.repo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => sound.playClick()}
+                    className="text-[var(--text-muted)] hover:text-[var(--text)] inline-flex items-center gap-1"
+                  >
+                    <span>GitHub</span>
+                    <ArrowUpRight className="size-3" aria-hidden="true" />
+                  </a>
+                </div>
+              </div>
 
-        {/* Dynamic 5s Line Progress */}
-        <div className="w-36 h-0.5 bg-[var(--border)] rounded-full overflow-hidden">
-          <div
-            className="h-full bg-gradient-to-r from-emerald-400 to-teal-500 transition-all duration-100 ease-linear"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
+              <div className="space-y-1">
+                <h3 className="text-lg font-semibold tracking-tight text-[var(--text)] group-hover:text-[var(--accent)] transition-colors">
+                  {proj.title}
+                </h3>
+                <p className="font-mono text-[11px] text-[var(--text-dim)]">
+                  {proj.subtitle}
+                </p>
+              </div>
+
+              <p className="text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed">
+                {proj.description}
+              </p>
+
+              <div className="px-3 py-2 rounded-xl bg-black/40 border border-[var(--border)] font-mono text-[11px] text-[var(--text-muted)]">
+                {proj.note}
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-1.5 pt-4 mt-4 border-t border-[var(--border)] font-mono text-[10px] text-[var(--text-muted)]">
+              {proj.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="px-2 py-0.5 rounded-md bg-white/[0.03] border border-[var(--border)]"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </TiltCard>
+        ))}
       </div>
     </section>
   );
